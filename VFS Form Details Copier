@@ -1,0 +1,261 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Legalization Form Details</title>
+</head>
+<body>
+    <div>
+        <div>
+            <h1>Document Legalization Form Details</h1>
+        </div>
+        
+        <div>
+            <form id="documentForm">
+                <!-- Form content unchanged -->
+                <div>
+                    <div>
+                        <label for="surname"><strong>Surname*</strong></label>
+                        <input type="text" id="surname" name="surname" required>
+                        <button type="button" onclick="copyToClipboard('surname')">Copy</button>
+                    </div>
+<br>
+                    <div>
+                        <label for="otherNames"><strong>Other Names*</strong></label>
+                        <input type="text" id="otherNames" name="otherNames" required>
+                        <button type="button" onclick="copyToClipboard('otherNames')">Copy</button>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label><strong>Date Of Birth*</strong></label>
+                        <select id="dobDay" name="dobDay" required></select>
+                        <select id="dobMonth" name="dobMonth" required></select>
+                        <select id="dobYear" name="dobYear" required></select>
+                    </div>
+<br>
+                    <div>
+                        <label for="passportNo"><strong>Passport No*</strong></label>
+                        <input type="text" id="passportNo" name="passportNo" required>
+                        <button type="button" onclick="copyToClipboard('passportNo')">Copy</button>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label><strong>Passport Expiry Date*</strong></label>
+                        <select id="expDay" name="expDay" required></select>
+                        <select id="expMonth" name="expMonth" required></select>
+                        <select id="expYear" name="expYear" required></select>
+                    </div>
+<br>
+                    <div>
+                        <label for="gender"><strong>Gender*</strong></label>
+                        <select name="gender">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label for="nationality"><strong>Nationality*</strong></label>
+                        <input type="text" id="nationality" name="nationality" required>
+                    </div>
+<br>
+                    <div>
+                        <label for="email"><strong>Email Id*</strong></label>
+                        <input type="email" id="email" name="email" required>
+                        <button type="button" onclick="copyToClipboard('email')">Copy</button>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label for="primaryPhone"><strong>Primary Phone*</strong></label>
+                        <input type="text" id="primaryPhone" name="primaryPhone" placeholder="7XXXXXXXXX" required>
+                        <button type="button" onclick="copyToClipboard('primaryPhone')">Copy</button>
+                    </div>
+<br>
+                    <div>
+                        <label for="secondaryPhone"><strong>Secondary Phone*</strong></label>
+                        <input type="text" id="secondaryPhone" name="secondaryPhone" placeholder="7XXXXXXXXX">
+                        <button type="button" onclick="copyToClipboard('secondaryPhone')">Copy</button>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label for="nationalId"><strong>National ID No</strong></label>
+                        <input type="text" id="nationalId" name="nationalId">
+                        <button type="button" onclick="copyToClipboard('nationalId')">Copy</button>
+                    </div>
+<br>
+                    <div>
+                        <label for="placeOfBirth"><strong>Place of Birth*</strong></label>
+                        <input type="text" id="placeOfBirth" name="placeOfBirth" required>
+                        <button type="button" onclick="copyToClipboard('placeOfBirth')">Copy</button>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label for="countryOfBirth"><strong>Country of Birth*</strong></label>
+                        <input type="text" id="countryOfBirth" name="countryOfBirth" required>
+                    </div>
+<br>
+                    <div>
+                        <label for="maritalStatus"><strong>Marital Status*</strong></label>
+                        <select name="maritalStatus">
+                            <option>Single</option>
+                            <option>Married</option>
+                        </select>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label for="deliveryAddress"><strong>Delivery Address*</strong></label>
+                        <input id="deliveryAddress" name="deliveryAddress" required></input>
+                        <button type="button" onclick="copyToClipboard('deliveryAddress')">Copy</button>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label for="delegateName"><strong>Delegate Name</strong></label>
+                        <input type="text" id="delegateName" name="delegateName">
+                        <button type="button" onclick="copyToClipboard('delegateName')">Copy</button>
+                    </div>
+<br>
+                    <div>
+                        <label for="delegatePassport"><strong>Delegate Passport Number</strong></label>
+                        <input type="text" id="delegatePassport" name="delegatePassport">
+                        <button type="button" onclick="copyToClipboard('delegatePassport')">Copy</button>
+                    </div>
+                </div>
+<br>
+                <div>
+                    <div>
+                        <label for="delegateNationalId"><strong>Delegate National ID Number</strong></label>
+                        <input type="text" id="delegateNationalId" name="delegateNationalId">
+                        <button type="button" onclick="copyToClipboard('delegateNationalId')">Copy</button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3><strong>Select the documents to be legalized</strong></h3>
+                    <div>
+                        <div>
+                            <input type="checkbox" id="birthCert" name="documents" value="Birth Certificate">
+                            <label for="birthCert"><strong>Birth Certificate</strong></label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="marriageCert" name="documents" value="Marriage Certificate">
+                            <label for="marriageCert"><strong>Marriage Certificate</strong></label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="policeCert" name="documents" value="Police Certificate">
+                            <label for="policeCert"><strong>Police Certificate</strong></label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="successMessage" style="display:none;">
+        Text copied to clipboard!
+    </div>
+
+    <script>
+        // Populate date selectors
+        function populateDateSelectors(dayId, monthId, yearId, startYear, endYear) {
+            const daySelect = document.getElementById(dayId);
+            const monthSelect = document.getElementById(monthId);
+            const yearSelect = document.getElementById(yearId);
+
+            for (let d = 1; d <= 31; d++) {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                daySelect.appendChild(opt);
+            }
+
+            const months = [
+                'January','February','March','April','May','June',
+                'July','August','September','October','November','December'
+            ];
+            months.forEach((m) => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                monthSelect.appendChild(opt);
+            });
+
+            const increment = startYear <= endYear ? 1 : -1;
+            for (let y = startYear; (increment > 0 ? y <= endYear : y >= endYear); y += increment) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                yearSelect.appendChild(opt);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentYear = new Date().getFullYear();
+            populateDateSelectors('dobDay','dobMonth','dobYear', 1900, currentYear);
+            populateDateSelectors('expDay','expMonth','expYear', currentYear, currentYear + 20);
+        });
+
+        // Fixed cross-platform copy to clipboard
+        function copyToClipboard(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            let text = '';
+            if (el.tagName === 'SELECT') {
+                text = el.value;
+            } else {
+                text = el.value || el.textContent;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(showMessage).catch(fallbackCopy);
+            } else {
+                fallbackCopy();
+            }
+
+            function fallbackCopy() {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = text;
+                tempInput.style.position = 'fixed';
+                tempInput.style.top = '-1000px';
+                tempInput.style.left = '-1000px';
+                document.body.appendChild(tempInput);
+                tempInput.focus();
+                tempInput.select();
+
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) showMessage();
+                } catch (err) {
+                    console.error('Fallback copy failed:', err);
+                }
+
+                document.body.removeChild(tempInput);
+            }
+        }
+
+        // Flash success message
+        function showMessage() {
+            const msg = document.getElementById('successMessage');
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 2000);
+        }
+    </script>
+</body>
+</html>
