@@ -1,0 +1,300 @@
+function ValidateFields(id, str, type, msg)
+{
+	var res = true;
+	$(id).css('border-color', '#ccc');
+	if(type == 1)  // Alphabets with space
+	{
+		if(str == "")
+        {
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+        else if(str != "")
+        {
+            var regex = /^[A-Z a-z]+$/;
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+            else {
+                if (!ValidateXSS(str, msg)) {
+                    $(id).css('border-color', 'red');
+                    $(id).focus();
+                    res = false;
+                }
+            }
+        } 
+	}
+	else if (type == 2) // Number
+    {
+		if (str == "") 
+		{
+			$(id).css('border-color', 'red');
+			$(id).focus();
+			res = false;
+		}
+		else if (str != "") 
+		{
+			var regex = /^[0-9]+$/;
+			var isValid = regex.test(str);
+			if (!isValid) {
+				$(id).css('border-color', 'red');
+				$(id).focus();
+				res = false;
+			}
+			else {
+				if (!ValidateXSS(str, msg)) {
+					$(id).css('border-color', 'red');
+					$(id).focus();
+					res = false;
+				}
+			}
+		}		
+    }
+	else if (type == 3)  // Email
+    {
+        if (str == "") 
+		{
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+        else if (str != "") 
+		{
+            var regex = /^([\w+-]+\.)*[\w+-]+@([\w+-]+\.)*[\w+-]+\.[a-zA-Z]{2,4}$/;
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+        }
+    }
+	else if(type == 4)  // Alphanumeric  
+	{
+		if(str == "")
+        {
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+        else if(str != "")
+        {
+            var regex = /^[A-Za-z0-9]+$/;
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+            else {
+                if (!ValidateXSS(str, msg)) {
+                    $(id).css('border-color', 'red');
+                    $(id).focus();
+                    res = false;
+                }
+            }
+        } 
+	}
+	else if(type == 5)
+	{
+		if(str == "")
+        {
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+		else if(str != "")
+		{
+			if(str.length>250)
+			{
+				$(id).css('border-color', 'red');
+				$(id).focus();
+				res = false;
+			}
+			else
+			{
+				if (!ValidateXSSTextArea(str, "Address")) {
+					$(id).css('border-color', 'red');
+					$(id).focus();
+					res = false;
+				}
+			}
+		}
+	}
+	else if(type == 6)
+	{
+		if(str == "")
+        {
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+        else if(str != "")
+        {
+            var regex = /^[A-Za-z0-9 ]+$/;
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+            else {
+                if (!ValidateXSS(str, msg)) {
+                    $(id).css('border-color', 'red');
+                    $(id).focus();
+                    res = false;
+                }
+            }
+        } 
+	}
+	else if(type == 7)
+	{
+		if(str == "")
+        {
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+        else if(str != "")
+		{
+			if(str.length != 9)
+			{
+				$(id).css('border-color', 'red');
+				$(id).focus();
+				res = false;
+			}
+			else
+			{
+				var rgx = /^([5-7]{1})([0-9]{8})$/;  
+				var res1 = str.match(rgx);
+				if(res1 == null)
+				{
+					$(id).css('border-color', 'red');
+					$(id).focus();
+					res = false;
+				}
+			}
+		}
+	}
+	else if(type == 8)
+	{
+		if(str == "")
+        {
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+        else if(str != "")
+        {
+            var regex = /^[A-Z a-z]+$/;
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+            else {
+                if (!ValidateXSS(str, msg)) {
+                    $(id).css('border-color', 'red');
+                    $(id).focus();
+                    res = false;
+                }
+            }
+        } 
+	}
+	else if(type == 9)  // Alphanumeric  
+	{
+		if(str != "")
+        {
+            var regex = /^[A-Za-z0-9]+$/;
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+            else {
+                if (!ValidateXSS(str, msg)) {
+                    $(id).css('border-color', 'red');
+                    $(id).focus();
+                    res = false;
+                }
+            }
+        } 
+	}
+	else if(type == 10)
+	{
+		if(str == "")
+        {
+            $(id).css('border-color', 'red');
+            $(id).focus();
+            res = false;
+        }
+        else if(str != "")
+        {
+            var regex = /^([a-zA-Z0-9]{10,12})$/;  
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+            else {
+                if (!ValidateXSS(str, msg)) {
+                    $(id).css('border-color', 'red');
+                    $(id).focus();
+                    res = false;
+                }
+            }
+        } 
+	}
+	else if(type == 11)
+	{
+		if(str != "")
+        {
+            var regex = /^([a-zA-Z0-9]{10,12})$/;  
+            var isValid = regex.test(str);
+            if (!isValid) {
+                $(id).css('border-color', 'red');
+                $(id).focus();
+                res = false;
+            }
+            else {
+                if (!ValidateXSS(str, msg)) {
+                    $(id).css('border-color', 'red');
+                    $(id).focus();
+                    res = false;
+                }
+            }
+        } 
+	}
+	return res;
+}
+function ValidateXSSTextArea(aInput, errorField)
+{
+    var reg = /[<|>]/g;
+	var DefaultMsg = "Invalid";
+    if (aInput != "" && reg.test(aInput)) {
+        alert(DefaultMsg + errorField + ".");
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+function ValidateXSS(aInput, errorField)
+{
+    var reg = /[<|>()'"\*;:={}!@#$%^&_]/g;
+	var DefaultMsg = "Invalid";
+    if (aInput != "" && reg.test(aInput)) {
+        alert(DefaultMsg + errorField + ".");
+        return false;
+    }
+    else {
+        return true;
+    }
+}

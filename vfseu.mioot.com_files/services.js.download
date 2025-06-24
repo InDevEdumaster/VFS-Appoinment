@@ -1,0 +1,708 @@
+function VisitorLogin()
+{	
+	ShowLoading1();
+    var chkObj = { token: Token }
+    var chkParameter =  JSON.stringify(chkObj);
+    $.ajax({
+        url: VisitorLoginURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        //async: false,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: {"Content-Type": "text/plain"},
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data) {
+			HideLoading1();
+            if(data.status == 1)
+            {
+                SessionId = data.sessionId;
+                SessionToken = data.sessionToken;
+				
+				var SlotCount = data.slotCount;
+				if(SlotCount > 0)
+				{
+				  GetCaptcha();	
+				}
+				else				
+				{
+					$("#divMain").hide();
+					$("#finalMsg").html("Sorry, there are no appointment slots available currently. New appointment slots will be made available in a few days.");
+				}
+            }
+            else if(data.status == 0)
+            {
+				alert("Invalid Parameter");
+            }
+			else if(data.status == 2)
+            {
+				alert("Invalid Email Id");
+            }
+			else if(data.status == 3)
+            {
+				alert("Invalid Domain");
+            }
+			else if(data.status == 4)
+            {
+				alert("Unable to proceed with booking as you have exceeded the maximum limit of 5 active appointments.");
+            }
+        }
+    });
+}
+function CheckOTP()
+{
+	var otp = $("#txtValidateOTP").val().trim();
+	var captcha = $("#txtCaptcha").val().trim();
+	if (otp == "") {
+            $("#txtValidateOTP").css('border-color', 'red');
+            $("#txtValidateOTP").focus();
+            return false;
+    }
+	if(captcha == "")
+	{
+		$("#txtCaptcha").css('border-color', 'red');
+        $("#txtCaptcha").focus();
+        return false;
+	}
+	
+	ShowLoading1();
+    var chkObj = { otp: otp, session_id: SessionId, session_token: SessionToken, captcha_id : captcha }
+    var chkParameter =  JSON.stringify(chkObj);
+	
+	if(isValidate == 0)
+	{
+		$.ajax({
+			url: ValidateOTPURL,
+			type: 'POST',
+			data: chkParameter,
+			dataType: 'json',
+			crossDomain: true,
+			//async: false,
+			jsonp: false,
+			cache: false,
+			timeout: 30000,
+			headers: {"Content-Type": "text/plain"},
+			beforeSend: function (xhr) {
+
+				if (xhr.overrideMimeType) {
+					xhr.overrideMimeType("application/json");
+				}
+			},
+			success: function (data) {
+				
+				timerOn = false;
+				HideLoading1();
+				isValidate = 0;
+				if(data.status == 1)
+				{      
+					isValidate = 1;
+					timerOn = false;				
+					var otp = $("#txtValidateOTP").val().trim();			
+					$("#session_id").val(SessionId);	
+					$("#session_token").val(SessionToken);	
+					$("#otp").val(otp);	
+					document.forms["mainForm"].submit();
+				}
+				else if(data.status == 2)
+				{
+					timerOn = true;
+					$("#txtValidateOTP").val('');
+					alert("Invalid Otp");
+				}
+				else if(data.status == 3)
+				{
+					alert("OTP Expired");
+				}
+				else if(data.status == 4)
+				{
+					alert("Max attempt reached");
+				}
+				else if(data.status > 4)
+				{
+					alert("Invalid Request");
+				}
+			}
+		});
+	}
+}
+function GetCaptcha()
+{
+
+	ShowLoading1();
+    var data1 = CaptchaURL + "sessionId=" + SessionId;
+	
+    $.ajax({
+        type: "GET",
+        url: data1,
+        mimeType: "text/plain; charset=x-user-defined",
+        success: function (data) {
+			HideLoading1();
+            if(data.status == 2)
+            {
+				//var msg = GetName("alert_invalid_captcha",1);
+				//alert(msg);
+                alert("Invalid Session");
+            }
+            else
+            {
+                $("#divcaptcha").show();
+                $('#captchaImg' ).attr('src', 'data:image/png;base64,' + base64encode(data)); 
+            }
+        },
+    });
+}
+function base64encode(str) 
+{
+    var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    var out = "", i = 0, len = str.length, c1, c2, c3;
+    while (i < len) {
+        c1 = str.charCodeAt(i++) & 0xff;
+        if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt((c1 & 0x3) << 4);
+            out += "==";
+            break;
+        }
+        c2 = str.charCodeAt(i++);
+        if (i == len) {
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt((c2 & 0xF) << 2);
+            out += "=";
+            break;
+        }
+        c3 = str.charCodeAt(i++);
+        out += CHARS.charAt(c1 >> 2);
+        out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+        out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+        out += CHARS.charAt(c3 & 0x3F);
+    }
+    return out;
+}
+
+function FormSubmission(Parameter)
+{
+	ShowLoading();
+	$("#btn_submit").prop('disabled', true);
+	$.ajax({
+        url: FormSubmissionURL,
+        type: 'POST',
+        data: Parameter,
+        dataType: 'json',
+        crossDomain: true,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: { "Content-Type": "text/plain" },
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data)
+        {
+			HideLoading();
+			
+			if(data.status == 1)
+			{
+				var str = "";    
+                str += '<input type="hidden" name="sessionId" value="'+ sessionId +'" />';
+                var divObj = document.getElementById("NewTicketUploadFile1");
+                divObj.innerHTML = str;
+                document.forms["form2"].submit();
+			}
+			else if(data.status == 2 || data.status == 3)
+			{
+				alert("Invalid Session");
+				window.location.href = StartURL;
+			}
+            else if(data.status == 4)
+			{
+				alert("Invalid Input");
+			}
+            else if(data.status == 5)
+			{
+				alert("Exceeding upload document within 6 months");
+			}
+			else if(data.status == 6)
+			{
+				alert("The slot are not available for same day");
+			}
+		}
+	});
+}
+function ResendOTP123()
+{
+	OTPCountResend = 0;
+	isGetResend = 2;
+	/*$("#divOTP").show();
+	$("#divbtnOTP").hide();
+	$("#divbtnResendOTP").hide();				
+	$("#divbtnValidateOTP").show();
+	startTimerOTP(300);*/
+	$("#divOTP").hide();
+	$("#divbtnOTP").hide();
+	$("#divbtnResendOTP").show();	
+	$("#divbtnValidateOTP").hide();
+}
+function ResendOTP()
+{	
+	OTPCountResend = 0;
+	isGetResend = 2;
+	var email = $("#txtEmail").val().trim();
+	var captcha = $("#txtCaptcha").val().trim();
+	$("#btnResendOTP").attr('disabled', true);
+	ShowLoading1();
+	var chkObj = { session_id: SessionId, session_token: SessionToken, email_id: email, captcha_id: captcha  }
+    var chkParameter =  JSON.stringify(chkObj);
+    $.ajax({
+        url: ResendURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        //async: false,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: {"Content-Type": "text/plain"},
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data) {
+			$("#btnResendOTP").attr('disabled', false);
+			HideLoading1();
+			if(data.status == 1)
+			{
+				timerOn = true;
+				/*$("#divOTP").show();
+				$("#divbtnOTP").hide();
+				$("#divbtnResendOTP").hide();				
+				$("#divbtnValidateOTP").show();*/
+				$("#divbtnResendOTP").hide();
+				$("#divValidateOTP").show();
+				startTimerOTP(300);
+			}
+			else if(data.status == 2)
+			{
+				alert("Invalid Captcha");
+				GetCaptcha();
+			}
+			else if(data.status == 3)
+			{
+				alert("You have active session already.");
+			}
+			else if(data.status > 3)
+            {
+				alert("Invalid Request");
+            }
+			/*else if(data.status == 2)
+			{
+				alert("Invalid Parameter");
+			}
+			else if(data.status == 3)
+			{
+				alert("Invalid Session");
+			}
+			else if(data.status == 4)
+			{
+				alert("OTP send 3 times");
+			}
+			else if(data.status == 5)
+			{
+				alert("Next One Time Password can be triggered only after 5 mins");
+			}*/
+        }
+    });
+}
+function GetList()
+{
+	ShowLoading();
+    var chkObj = { session_id: Session_Id, session_token: Session_Token }
+    var chkParameter =  JSON.stringify(chkObj);
+	
+    $.ajax({
+        url: getListURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        //async: false,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: {"Content-Type": "text/plain"},
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data) {
+			HideLoading();
+            if(data.status == 1)
+            {           
+				objState = data.stateList;
+				objVAC = data.VACList;
+				objCat = data.categoryList;
+				objSubCat = data.subCategoryList;
+				LoadState();
+				LoadCategory();
+            }
+        }
+    });
+}
+
+function GetOTPDetails(emailId, captchaId)
+{	
+	$("#btnOTP").attr('disabled', true);
+	ShowLoading1();
+
+    var chkObj = { email_id: emailId, session_id: SessionId, session_token: SessionToken, captcha_id: captchaId }
+    var chkParameter =  JSON.stringify(chkObj);
+    $.ajax({
+        url: GetOTPURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        //async: false,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: {"Content-Type": "text/plain"},
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data) {
+			
+			$("#btnOTP").attr('disabled', false);
+			HideLoading1();
+            if(data.status == 1)
+            {         
+				timerOn = true;
+				
+				$("#divbtnOTP").hide();
+	            $("#divValidateOTP").show();
+				startTimerOTP(300);
+            }
+            else if(data.status == 2)
+            {
+				alert("Invalid Captcha");
+				GetCaptcha();
+            }
+			else if(data.status == 3)
+            {
+				alert("You have active session already.");
+            }
+			else if(data.status > 3)
+            {
+				alert("Invalid Request");
+            }
+        }
+    });
+}
+function CheckSlot(appNo, docNo, type, isDelegate)
+{	
+    
+	ShowLoading();
+    var chkObj = { session_id: sessionId, session_token: sessionToken, captcha_id: captchaId, no_of_applicant: appNo, total_documents: docNo, document_type: type }
+    var chkParameter =  JSON.stringify(chkObj);
+    $.ajax({
+        url: CheckSlotURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        //async: false,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: {"Content-Type": "text/plain"},
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data) {
+			HideLoading();
+			
+            if(data.status == 1)
+            {				
+				//objSlotDates = data.slotDates;
+				$("#ddlDocType").attr('disabled', true);
+                $("#ddlApplicant").attr('disabled', true);
+				$("#txtDoc").attr('disabled', true);
+				$("#divProceed").hide();
+				$("#divNote").show();
+				GetOwner();
+				BuildApplicants(); 
+				//LoadDates(data.slotDates);
+            }
+			else if(data.status == 2)
+            {
+				//alert("No slot available");
+				var sm = $("#isShowModal").val();
+				isFirst = 1;
+				$("#isShowModal").val(1);
+				var sm1 = $("#isShowModal").val();
+				$("#myModalConfirm").modal('show');
+            }
+			else if(data.status == 3)
+            {
+				alert("Invalid Session");
+            }
+			else if(data.status == 4)
+            {
+				alert("Internal Error");
+            }
+			else if(data.status == 6)
+            {
+				alert("No slots available");
+            }
+        }
+    });
+}
+function CheckSlot_Submit(appNo, docNo, type, obj)
+{	
+	ShowLoading();
+    var chkObj = { session_id: sessionId, session_token: sessionToken, captcha_id: captchaId, no_of_applicant: appNo, total_documents: docNo, document_type: type }
+    var chkParameter =  JSON.stringify(chkObj);
+    $.ajax({
+        url: CheckSlotURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        //async: false,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: {"Content-Type": "text/plain"},
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data) {
+			HideLoading();
+			
+            if(data.status == 1)
+            {
+				GetSubmissionDetails();
+            }
+			else if(data.status == 2)
+            {
+				//alert("No slot available");
+				var sm1 = $("#isShowModal").val();				
+				if(sm1 == 0)
+				{
+					isFirst = 1;
+					$("#myModalConfirm").modal('show');
+				}
+				else
+				{
+					GetSubmissionDetails();
+				}
+            }
+			else if(data.status == 3)
+            {
+				alert("Invalid Session");
+            }
+			else if(data.status == 4)
+            {
+				alert("Internal Error");
+            }
+			else if(data.status == 6)
+            {
+				alert("No slots available");
+            }
+        }
+    });
+}
+function CheckDocument(chkObj, no, flag)
+{	
+	ShowLoading();
+    //var chkObj = { session_id: sessionId, session_token: sessionToken, passport_number: passNo, delegate_passport_no: delPassNo, total_documents: docNo }
+    var chkParameter =  JSON.stringify(chkObj);
+    $.ajax({
+        url: CheckDocURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        //async: false,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: {"Content-Type": "text/plain"},
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data) {
+			HideLoading();
+            if(data.status == 1)
+            {
+                ContinueNextApplicant(no, flag); 
+            }
+			else if(data.status == 3)
+            {
+				alert("Sorry, there are no appointment slots available currently. New appointment slots will be made available in a few days.");
+				window.location.href = StartURL;
+            }
+			else 
+            {
+				alert(data.Message);
+            }
+        }
+    });
+}
+function CheckLogin(email, pass)
+{
+	var chkObj = { email_id: email, p1: pass}
+    var chkParameter =  JSON.stringify(chkObj);
+	//ShowLoading();
+	$.ajax({
+        url: UserLoginURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: { "Content-Type": "text/plain" },
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data)
+		{	
+			if(data.status == 1)
+			{
+				$("#session_id").val(data.id);	
+				$('#loginForm').attr('action', ListURL);
+				document.forms["loginForm"].submit();
+			}
+			else 
+			{
+				alert("Invalid Username or Password");
+			}
+		}
+	});	
+}
+function ApplicantLogout(sId)
+{
+	var chkObj = { session_id: sId }
+    var chkParameter =  JSON.stringify(chkObj);
+	//ShowLoading();
+	$.ajax({
+        url: LogoutURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: { "Content-Type": "text/plain" },
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data)
+		{
+			window.location.href = StartURL;
+		}
+	});	
+}
+
+function GetAppointmentList(reqId)
+{
+	//ShowLoading();
+	var chkObj = { request_id : reqId }
+    var chkParameter =  JSON.stringify(chkObj);
+		$.ajax({
+        url: AppURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: { "Content-Type": "text/plain" },
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data)
+        {		
+            //HideLoading();		
+			if(data.status == 1)
+			{
+				objList = data.appList;
+				LoadList();
+			}
+		}
+	});
+}
+function ConfirmAppointment(reqId)
+{
+	var chkObj = { request_id : reqId }
+    var chkParameter =  JSON.stringify(chkObj);
+		$.ajax({
+        url: ConfirmURL,
+        type: 'POST',
+        data: chkParameter,
+        dataType: 'json',
+        crossDomain: true,
+        jsonp: false,
+        cache: false,
+        timeout: 30000,
+        headers: { "Content-Type": "text/plain" },
+        beforeSend: function (xhr) {
+
+            if (xhr.overrideMimeType) {
+                xhr.overrideMimeType("application/json");
+            }
+        },
+        success: function (data)
+        {			
+			if(data.status == 1)
+			{
+				GetAppointmentList(reqId);
+			}
+			else
+			{
+				
+			}
+		}
+	});
+}
