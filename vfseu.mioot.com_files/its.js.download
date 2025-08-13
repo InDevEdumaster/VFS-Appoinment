@@ -1,0 +1,1803 @@
+var arrTotal = [];
+var Amount = 0.0;
+var docDetails = [];
+var docPerApp = 3;
+var arrOwner = [];
+var Owner = new Map(); 
+var tempArr = [];
+var arrPrice = [];
+var appDetails = [];
+var PoliceDocId = 4;
+var objSlotDates;
+var enabledDates = [];
+var isFirst = 0;
+
+
+$(function () { 
+  $('<style>.highlighted-date{background-color:#00CC66 !important;color:white;}.disabled-date{background-color:#E6E6E6 !important;color:#999;cursor:not-allowed;}</style>').appendTo('head');
+
+  $("body").on("focus", ".datepicker", function () {
+    $(this).datepicker({
+      format: "yyyy-mm-dd",
+      autoclose: true,
+    });
+  });
+  $("body").on("focus", ".datepicker_start", function () {
+    $(this).datepicker({
+      format: "yyyy-mm-dd",
+	  startDate: '1900-01-01',
+      endDate: new Date(),
+      autoclose: true,
+    });
+  });
+  
+});
+function CloseDialog()
+{
+	$("#myModalConfirm").modal('hide');
+}
+function SubmitConfirmAction(id)
+{	
+	//var flag = isFirst;//$("#isFirst").val();
+	$("#divWLMsg").hide();
+	$("#myModalConfirm").modal('hide');
+		
+	if(id == 1)
+	{
+		$("#divWLMsg").show();
+		if(isFirst == 1)
+		{
+			//$("#ddlDocType").attr('disabled', true);
+			$("#ddlApplicant").attr('disabled', true);
+			$("#txtDoc").attr('disabled', true);
+			$("#divProceed").hide();
+			$("#divNote").show();
+			GetOwner();
+			BuildApplicants();
+		}
+		else
+		{
+			GetSubmissionDetails();
+		}
+	}
+	else
+	{
+		window.location.href= StartURL;
+	}
+}
+function GetSubmissionDetails()
+{
+	var no = $("#ddlApplicant").val();	
+	var vac = $("#ddlVAC1").val();
+	//var type = $("#ddlDocType").val();
+	var tot = 0;
+	tot = GetTotalDocuments(no);
+	/*if(type == 1)
+	{
+		tot = no;
+	}
+	else
+	{
+		tot = GetTotalDocuments(no);
+	}*/
+	GetApplicantDetails(no);
+	var obj = {
+		session_id: sessionId,
+    	session_token: sessionToken,
+		captcha_id: captchaId,
+		//document_type: type,
+		vac_id: vac,
+		total_documents: tot,
+		applicantDetails: appDetails
+	};
+    var Parameter = JSON.stringify(obj);
+    FormSubmission(Parameter);
+}
+function onChangeDocumentType(type)
+{
+	$("#divDocNo").hide();
+	if(type > 0)
+	{
+		if(type == 2)
+		{
+			$("#divDocNo").show();
+		}
+	}
+}
+function checkTotalDocuments(no)
+{
+	if(no > 0)
+	{
+		var docNo = $("#txtDoc").val().trim();
+		if(docNo == "")
+		{
+			$("#txtDoc").css('border-color', 'red');
+			$("#txtDoc").focus();
+			return false;
+		}
+		else
+		{
+			if(parseInt(docNo)<no)
+			{
+				alert("The number of documents should not be lesser than the number of applicants.");
+				$("#txtDoc").val("");
+				$("#ddlApplicant").val("0");
+				return false;
+			}
+		}
+	}
+}
+function CheckAvailableSlots()
+{
+	var no = $("#ddlApplicant").val();
+	var docNo = "";
+	$("#divNote").hide();
+	docNo = $("#txtDoc").val().trim();
+	
+	if(no == 0)
+	{
+		$("#ddlApplicant").css('border-color', 'red');
+		$("#ddlApplicant").focus();
+		return false;
+	}
+	else	
+	{
+		if(docNo == "")
+		{
+			$("#txtDoc").css('border-color', 'red');
+			$("#txtDoc").focus();
+			return false;
+		}
+		else
+		{
+			if(parseInt(docNo)<no)
+			{
+				alert("The number of documents should not be lesser than the number of applicants.");
+				$("#txtDoc").val("");
+				$("#ddlApplicant").val("0");
+				return false;
+			}
+		}
+	}
+	
+	var totDoc = no * docPerApp;
+	if(totDoc >= docNo)
+	{
+		CheckSlot(no, docNo);
+	}
+	else
+	{
+		alert("The Total number of documents exceeds the allowed limit");
+		$("#txtDoc").val("");
+		return false;
+	}
+}
+/*function CheckAvailableSlots_old()
+{
+	var type = $("#ddlDocType").val();
+	var no = $("#ddlApplicant").val();
+	var docNo = "";
+	if(no == 0)
+	{
+		$("#ddlApplicant").css('border-color', 'red');
+		$("#ddlApplicant").focus();
+		return false;
+	}	
+	$("#divNote").hide();
+	
+	if(type == 1)
+	{
+		CheckSlot(no, no, type);
+	}
+	else if(type == 2)
+	{
+		docNo = $("#txtDoc").val().trim();
+		if(docNo == "")
+		{
+			$("#txtDoc").css('border-color', 'red');
+			$("#txtDoc").focus();
+			return false;
+		}
+		var totDoc = no * docPerApp;
+		if(totDoc >= docNo)
+		{
+			CheckSlot(no, docNo, type);*/
+			/*$("#ddlApplicant").attr('disabled', true);
+			$("#txtDoc").attr('disabled', true);
+			$("#divProceed").hide();
+			$("#divNote").show();
+			GetOwner();
+			BuildApplicants();*/
+		/*}
+		else
+		{
+			alert("The Total number of documents exceeds the allowed limit");
+			$("#txtDoc").val("");
+			return false;
+		}
+	}
+}*/
+function onChangeOwner(i)
+{
+	var id = $("#ddlDocOwner"+i).val();
+	if(id > 0)
+	{		
+		arrOwner.slice(id);
+		$("#divShow_"+i).show();
+	}
+}
+function GetOwner()
+{
+	var no = $("#ddlApplicant").val();
+	Owner.set(0, "---Select---");
+	Owner.set(1, "Main Applicant");
+	Owner.set(2, "Spouse");
+	tempArr.push(0);
+	tempArr.push(1);
+	tempArr.push(2);
+	for(var j=3;j<=5;j++)
+	{
+		Owner.set(j, "Child " + (j-2));
+		tempArr.push(j);
+	}
+}
+function LoadOwner(i)
+{
+	var list = "";
+	$("#ddlDocOwner"+i).empty();
+	
+	if(i == 1)
+	{
+		for (let [key, value] of Owner) 
+		{
+		  list += "<option value='"+ key +"'>"+ value +"</select>";
+        }
+		$("#ddlDocOwner"+i).append(list);
+		$("#ddlDocOwner1").val(1);
+		$("#ddlDocOwner1").attr('disabled', true);
+	}
+	else
+	{		
+		for (let [key, value] of Owner) 
+		{
+			var isKey = CheckKey(i, key);
+			if(isKey == 0)
+			{
+				list += "<option value='"+ key +"'>"+ value +"</select>";
+			}
+		}
+		$("#ddlDocOwner"+i).append(list);
+	}
+}
+function CheckKey(no, key)
+{
+	var docKey = 0, flag = 0;
+	for(var i=1;i<no;i++)
+	{
+	   docKey = $("#ddlDocOwner"+i).val();
+	   if(key == docKey)
+	   {
+		   flag = 1;
+	   }
+	}
+	return flag;
+}
+function LoadDocuments(no) 
+{
+	
+	for(var j=1;j<=no;j++)
+	{
+		var list = "";
+	    $("#divDoc" + j).empty();
+		list += '<div class="form-group row">';
+		list += '<div class="col-sm-6 col-md-6 col-lg-6 pl pr">';
+	    list += '<label class="col-form-label">Select the documents to be legalized <span style="color:red;">*</span></label>';
+		list += '</div>';
+		list += '</div>';
+		
+		for (var i = 0; i < documetList.length; i++) 
+		{
+			var id = j + "_" + documetList[i].doc_id;
+			
+			list += '<div class="col-sm-4 col-md-4 col-lg-4 pl pr">';
+			list += '<p class="d-inline-block">';
+			list += '<input type="checkbox" name="documentsType'+ j +'" id="chk' + id + '" value="' + id + 		  '" onchange="CheckCounts(' + j + ',' + documetList[i].doc_id + ')">';
+			list += '<label for="chk' + id + '">' + documetList[i].doc_name + "</label>";
+			list += "</p></div>";
+       }
+       $("#divDoc" + j).append(list);
+	}
+}
+function CheckApplicant(i)
+{
+	console.log(i);
+}
+function BuildApplicants()
+{	
+    //var type = $("#ddlDocType").val();
+	var no = $("#ddlApplicant").val();
+	var list = "";
+	$("#divApplicants").empty();
+	list += '<ul class="nav nav-tabs" role="tablist">';
+    for(var i=1;i<=no;i++)
+	{
+		if(i==1)
+		{
+			list += '<li class="nav-item" role="presentation" id="lst_'+i+'">';
+			list += '<button class="nav-link active" id="Applicant_tab_'+i+'" data-bs-toggle="tab" data-bs-target="#Applicant_'+i+'" type="button" role="tab" aria-controls="Applicant_'+i+'" aria-selected="true"><span id="span_'+i+'" style="color: #e86020 !important;" onclick="CheckApplicant('+i+')">Applicant'+i+'</span></button></li>';
+		}
+		else
+		{
+			list += '<li class="nav-item" role="presentation" style="display:none;" id="lst_'+i+'">';
+			list += '<button class="nav-link" id="Applicant_tab_'+i+'" data-bs-toggle="tab" data-bs-target="#Applicant_'+i+'" type="button" role="tab" aria-controls="Applicant_'+i+'" aria-selected="true"><span id="span_'+i+'" style="color: #e86020 !important;" onclick="CheckApplicant('+i+')">Applicant'+i+'</span></button></li>';
+		}
+	}
+	list += '</ul>';
+	list += '<div class="tab-content">'; 
+	for(var i=1;i<=no;i++)
+	{		
+		if(i==1)
+        {
+            list += '<div id="Applicant_'+i+'" class="tab-pane fade show active" role="tabpanel" aria-labelledby="Applicant_tab_'+i+'"><br>';
+        }
+        else
+        {
+            list += '<div id="Applicant_'+i+'" class="tab-pane fade" role="tabpanel" aria-labelledby="Applicant_tab_'+i+'"><br>';
+        }
+		
+		list += '<div id="divShow_' + i + '" style="display:none;">';
+		
+		//list += '<div id="divOwner'+ i +'" class="form-group row" >';
+        //list += '<label class="col-sm-12 col-form-label">Document Owner<span style="color:red;">*</span></label>';
+        //list += '<div class="col-sm-12">';
+		//list += '<select class="form-control" id="ddlDocOwner'+ i + '" style="height:45px;" onchange="onChangeOwner('+ i + ')">';
+		//list += '<option value="0">--- Select ---</option>';
+		//list += '</select>';
+        //list += '</div></div>';
+		
+		
+		
+		list += '<div id="divOwner'+ i +'" class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Document Owner<span style="color:red;">*</span></label>';
+		list += '<select class="form-control" id="ddlDocOwner'+ i + '" onchange="onChangeOwner('+ i + ')">';
+		list += '<option value="0">--- Select ---</option>';
+		list += '</select>';
+        list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">VAC</label>';
+		list += '<select class="form-control" id="ddlVAC'+ i + '">';
+		list += '<option value="0">--- Select ---</option>';
+		list += '</select>';
+        list += '</div>';
+		list += '</div>';		
+		
+		
+		/*if(i == 1)
+		{
+			list += '<div class="form-group row">';
+			list += '<label class="col-sm-12 col-form-label">Full Name of Delegate</label>';
+			list += '<div class="col-sm-12"><input type="text" id="txtDelegateName' + i + '" class="form-control">';
+			list += '</div></div>';
+			
+			list += '<div class="form-group row">';
+			list += '<label class="col-sm-12 col-form-label">Passport Number of Delegate</label>';
+			list += '<div class="col-sm-12"><input type="text" id="txtDelegatePassNo' + i + '" class="form-control">';
+			list += '</div></div>';
+		}*/
+		
+		//list += '<div class="form-group row">';
+        //list += '<label class="col-sm-12 col-form-label">VAC<span style="color:red;">*</span></label>';
+        //list += '<div class="col-sm-12">';
+		//list += '<select class="form-control" id="ddlVAC'+ i + '" style="height:45px;">';
+		//list += '<option value="0">--- Select ---</option>';
+		//list += '</select>';
+        //list += '</div></div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Surname (as in the national ID)<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtFirstName' + i + '" class="form-control">';
+        list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Other Names (as in the national ID)<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtLastName' + i + '" class="form-control">';
+        list += '</div>';
+		list += '</div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Date Of Birth<span style="color:red;">*</span></label>';
+		list += '<input type="text" class="form-control datepicker_start' + i + '"  style="width: 150px;height: 50;" id="txtDOB'+ i + '" onKeyDown="return false">';
+        list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Passport No<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtPassportNo' + i + '" class="form-control">';
+        list += '</div>';
+		list += '</div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Passport Expiry Date<span style="color:red;">*</span></label>';
+		list += '<input type="text" class="form-control datepicker' + i + '"  style="width: 150px;height: 50;" id="txtDOE'+ i + '" onKeyDown="return false">';
+        list += '</div>';
+		
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Gender<span style="color:red;">*</span></label>';
+		list += '<select class="form-control" id="ddlGender' + i + '">';
+		list += '<option value="0">--- Select ---</option>';
+		list += '<option value="Male">Male</option>';
+		list += '<option value="Female">Female</option>';
+		list += '</select>';
+        list += '</div>';
+		list += '</div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Nationality<span style="color:red;">*</span></label>';
+		list += '<select class="form-control" id="ddlNationality' + i + '">';
+		list += '<option value="0">-Select-</option></select>';
+        list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Email Id<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtEmail' + i + '" class="form-control">';
+        list += '</div>';
+		list += '</div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Primary Phone<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtContactNo' + i + '" class="form-control" placeholder="7XXXXXXXXX">';
+        list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Secondary Phone<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtSecondaryPhone' + i + '" class="form-control" placeholder="7XXXXXXXXX">';
+        list += '</div>';
+		list += '</div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">National ID No<span id="lblNatId'+ i +'" style="color:red;display:none;">*</span></label>';
+		list += '<input type="text" id="txtNationalId' + i + '" class="form-control">';
+        list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Place of Birth<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtBirthPlace' + i + '" class="form-control">';
+        list += '</div>';
+		list += '</div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Country of Birth<span style="color:red;">*</span></label>';
+		list += '<select class="form-control" id="ddlBirthCountry' + i + '">';
+		list += '<option value="0">-Select-</option></select>';
+        list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Marital Status<span style="color:red;">*</span></label>';
+		list += '<select class="form-control" id="ddlMaritalSts' + i + '">';
+		list += '<option value="0">-Select-</option>';
+		list += '<option value="1">Single</option>';
+		list += '<option value="2">Married</option></select>';
+        list += '</div>';
+		list += '</div>';
+		
+		list += '<div class="form-group row">';
+        list += '<div class="col-sm-12 col-md-12 col-lg-12 pl pr"><label class="col-form-label">Delivery Address<span style="color:red;">*</span></label>';
+		list += '<textarea id="txtAddress' + i + '" class="form-control"></textarea>';
+        list += '</div>';
+		list += '</div>';
+		
+		
+		list += '<div class="form-group row">';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Are you submitting  the documents by yourself?<span style="color:red;">*</span></label>';
+		list += '<select class="form-control" id="ddlDelegate' + i + '" onchange="DelegateOption(this.value,' + i + ')">';
+		list += '<option value="0">-Select-</option>';
+		list += '<option value="1">Yes, Myself </option>';
+		list += '<option value="2">No, through a delegate</option></select>';
+		list += '</div>';
+		list += '<div id="divDelName'+ i +'" class="col-md-6 col-md-6 col-lg-6 pl pr" style="display:none;"><label class="col-form-label">Delegate Name (as in the national ID)<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtDelegateName' + i + '" class="form-control">';
+		list += '</div>';
+		list += '</div>';
+		
+		list += '<div id="isDelegate'+ i + '" style="display:none;">';
+		list += '<div class="form-group row">';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Delegate Passport Number</label>';
+		list += '<input type="text" id="txtDelegatePassNo' + i + '" class="form-control">';
+		list += '</div>';
+		list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Delegate National ID Number<span style="color:red;">*</span></label>';
+		list += '<input type="text" id="txtDelegateNatId' + i + '" class="form-control">';
+		list += '</div>';
+		list += '</div>';
+		list += '</div>';
+			
+		
+	
+		/*if(i == 1)
+		{
+			//Removed on 24-Dec-2024 instructed by Partha
+			/*list += '<div class="form-group row">';
+			list += '<label class="col-sm-12 col-form-label">Preferred Appointment Date<span style="color:red;">*</span></label>';
+			list += '<div class="col-sm-12"><input type="text" class="form-control datepicker_dt' + i + '"  style="width: 150px;height: 50;" id="txtAppDt'+ i + '" onKeyDown="return false">';
+			list += '</div></div>';*/
+			
+			
+			/*list += '<div class="form-group row">';
+			list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Full Name of Delegate<span style="color:red;">*</span></label>';
+			list += '<input type="text" id="txtDelegateName' + i + '" class="form-control">';
+			list += '</div>';
+			list += '<div class="col-md-6 col-md-6 col-lg-6 pl pr"><label class="col-form-label">Passport Number of Delegate<span style="color:red;">*</span></label>';
+			list += '<input type="text" id="txtDelegatePassNo' + i + '" class="form-control">';
+			list += '</div>';
+			list += '</div>';
+		
+		}*/
+		
+		
+		
+		list += '<div class="form-group row" id="divDoc' + i + '"></div>';
+		
+		if(i<no)
+        {
+            list += '<div class="form-group row">';
+			list += '<div class="col-sm-12">';
+            list += '<label class="col-sm-12 col-form-label"></label>';
+			
+			list += '<input type="button" id="btnApp_' + i + '" class="btn1 btn-dark" style="width:20%;" value="Next" onClick="ShowApplicant('+i+');"></div></div>';
+			
+			/*if(i == 1)
+			{
+				list += '<input type="button" id="btnApp_' + i + '" class="btn1 btn-dark" style="width:20%;" value="Next" onClick="ShowApplicant('+i+');">&nbsp;&nbsp;<input type="button" id="btnEdit_' + i + '" class="btn1 btn-dark" style="width:20%;display:none;" value="Edit" onClick="EditApplicant('+i+');"></div></div>';
+			}
+			else
+			{
+				list += '<input type="button" id="btnApp_' + i + '" class="btn1 btn-dark" style="width:20%;" value="Next" onClick="ShowApplicant('+i+');">&nbsp;&nbsp;<input type="button" id="btnEdit_' + i + '" class="btn1 btn-dark" style="width:20%;display:none;" value="Edit" onClick="EditApplicant('+i+');">&nbsp;&nbsp;<input type="button" id="btnBack_' + i + '" class="btn1 btn-dark" style="width:20%;display:none;" value="Back" onClick="PreviousApplicant('+i+');"></div></div>';
+			}*/
+        }
+        else
+        {
+            list += '<div class="form-group row">';
+            list += '<div class="col-sm-12 pl pr">';
+			list += '<label class="col-form-label"></label>';
+            //list += '<input type="button" id="btnBack_' + i + '" class="btn1 btn-dark" style="width:20%;display:none;" value="Back" onClick="PreviousApplicant('+i+');">&nbsp;&nbsp;<input type="button" id="btnCon" class="btn1 btn-dark" style="width:20%;" value="Continue" onClick="ContinueSubmit('+ i +');"></div></div>';
+			
+			list += '<input type="button" id="btnCon" class="btn1 btn-dark" style="width:20%;" value="Continue" onClick="ContinueSubmit('+ i +');"></div></div>';
+        }
+		list += '</div>';
+		list += '</div>';
+	}
+	list += '</div>';
+    $("#divApplicants").append(list);
+	$('#btnCon').prop('disabled', true);
+	$('#btnApp_1').prop('disabled', true);
+	startTimer(60);
+	for(var i=1;i<=no;i++)
+    {
+		$("#txtEmail"+i).val(emailId);
+        $("#txtEmail"+i).attr("disabled", true);
+		
+		$(".datepicker_start" + i + "").datepicker({ 
+            format: "yyyy-mm-dd",
+			startDate: '1900-01-01',
+			endDate: new Date(),			
+			autoclose: true
+        }).on("change", function(e) {
+			CalculateAge(e.target.id);;
+		});
+		
+        $('.fa-calendar_'+ i +'').click(function() {
+            $(".datepicker_start" + i + "").focus();
+        });
+		
+		$(".datepicker" + i + "").datepicker({ 
+            format: "yyyy-mm-dd", 
+            startDate: new Date(),			
+			autoclose: true,
+			orientation: "top"
+        });
+		
+        $('.fa-calendar_'+ i +'').click(function() {
+            $(".datepicker" + i + "").focus();
+        });
+    }
+	$("#divShow_1").show();
+	//$("#divOwner1").show();
+	LoadOwner(1);
+	//if(type == 2)
+	//{
+		LoadDocuments(no);
+	//}
+	LoadNationality(no);
+	LoadCountry(no);
+	LoadVAC(no);
+}
+function startTimer(remaining)
+{
+	remaining -= 1;
+	console.log(remaining);
+    if (remaining >= 0) {
+        OtpTimer = setTimeout(function() {
+            startTimer(remaining);
+        }, 1000);
+        return;
+    }
+	else		
+	{
+		$('#btnCon').prop('disabled', false);
+		$('#btnApp_1').prop('disabled', false);
+	}
+}
+function DelegateOption(id, i)
+{
+	$("#divDelName"+i).hide();
+	$("#isDelegate"+i).hide();
+		
+	if(id == 2)
+	{
+		$("#divDelName"+i).show();
+		$("#isDelegate"+i).show();
+	}
+}
+function CalculateAge(id)
+{
+	var i = id.substring(6);
+	var dob = $("#txtDOB"+i).val();
+	var age = GetAge(dob);	
+	
+	$("#lblNatId"+i).hide();
+	if(age >= 18)
+	{
+		$("#lblNatId"+i).show();
+		$("#ddlDelegate"+i).val(0);
+		$("#ddlDelegate"+i).attr('disabled', false);
+		DelegateOption(0, i);
+	}
+	else
+	{
+		$("#ddlDelegate"+i).val(2);
+		$("#ddlDelegate"+i).attr('disabled', true);
+		DelegateOption(2, i);
+	}		
+}
+function GetAge(birthDate) 
+{
+    var currentDate = new Date();
+    var birthDate = new Date(birthDate);
+    var age = currentDate.getFullYear() - birthDate.getFullYear();
+    var monthDiff = currentDate.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+function LoadDates(objDt)
+{
+	enabledDates = [];
+	$.each(objDt, function( index, value ) {
+		enabledDates.push(value);
+	});
+	
+	$("#txtAppDt1").datepicker({
+	   format: 'yyyy-mm-dd',
+	   autoclose: true,
+	   orientation: "top",
+	   beforeShowDay: function (date) {
+			var dateString = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-'
+				 + ('0' + date.getDate()).slice(-2);
+		  //return enabledDates.indexOf(fullDate) != -1
+		 if (enabledDates.includes(dateString)) {
+                return {
+                    enabled: true,
+                    classes: 'highlighted-date',
+                    tooltip: 'Available date'
+                };
+            } else {
+                return {
+                    enabled: false,
+                    classes: 'disabled-date',
+                    tooltip: 'Unavailable date'
+                };
+            }
+		}
+	});
+}
+function LoadNationality(no) 
+{
+	for(var j=1;j<=no;j++)
+	{
+	  var list = "";
+	  $("#ddlNationality" + j).empty();
+	  list += "<option value='0'>---Select---</option>";
+	  for (var i = 0; i < countryList.length; i++) {
+		list += "<option value=" + countryList[i].country_id + ">" + countryList[i].nationality + 		  "</option>";
+	  }
+	  $("#ddlNationality" + j).append(list);
+	}  
+}
+function LoadCountry(no) 
+{
+	for(var j=1;j<=no;j++)
+	{
+	  var list = "";
+	  $("#ddlBirthCountry" + j).empty();
+	  list += "<option value='0'>---Select---</option>";
+	  for (var i = 0; i < countryList.length; i++) {
+		list += "<option value=" + countryList[i].country_id + ">" + countryList[i].country_name + 		  "</option>";
+	  }
+	  $("#ddlBirthCountry" + j).append(list);
+	}  
+}
+function LoadVAC(no) 
+{
+	for(var j=1;j<=no;j++)
+	{
+		var list = "";
+		$("#ddlVAC" + j).empty();
+		if (vacList.length > 1) 
+		{
+			list += "<option value='0'>---Select---</option>";
+		}
+		for (var i = 0; i < vacList.length; i++) 
+		{
+			list += "<option value=" + vacList[i].vac_id + ">" + vacList[i].vac_name + "</option>";
+		}
+		$("#ddlVAC" + j).append(list);
+		if (vacList.length == 1) {
+			$("#ddlVAC"+j).attr("disabled", true);
+		}
+	}
+  
+  
+}
+/*function LoadDocuments1() {
+  var list = "";
+  $("#divDoc").empty();
+  list +=
+    '<label class="col-form-label">Select the documents to be legalized <span style="color:red;">*</span></label>';
+
+  for (var i = 0; i < documetList.length; i++) {
+    var id = documetList[i].doc_id;
+    list += '<div class="col-sm-12">';
+    list += '<p class="d-inline-block">';
+    list +=
+      '<input type="checkbox" name="documentsType" id="chk' +
+      id +
+      '" value="' +
+      id +
+      '" onchange="CheckCounts(' +
+      id +
+      ')">';
+    list +=
+      '<label for="chk' + id + '">' + documetList[i].doc_name + "</label>";
+    list += "</p></div>";
+  }
+  $("#divDoc").append(list);
+}*/
+function CheckCounts(row, id) {
+  var arrDoc = [];
+  var chkId = "#chk" + row + "_" + id;
+  if ($(chkId).is(":checked")) 
+  {	 
+    $("input:checkbox[name=documentsType"+ row +"]:checked").each(function () {
+      arrDoc.push($(this).val());
+    });
+	
+    if (arrDoc.length > 3) 
+	{
+      alert("Max 3 allowed");
+      $(chkId).prop("checked", false);
+    } 
+	else 
+	{
+		
+      var temp = documetList.filter((d) => d.doc_id == id);
+      if (temp.length > 0) 
+	  {
+        Amount = Number(Amount) + Number(temp[0].doc_fee);
+        Amount = Amount.toFixed(2);
+      }
+    }
+  } 
+  else 
+  {
+    $("input:checkbox[name=documentsType"+ row +"]:checked").each(function () 
+	{
+      arrDoc.push($(this).val());
+    });
+
+    if (arrDoc.length > 3) {
+      alert("Max 3 allowed **2**");
+      $(chkId).prop("checked", false);
+    } 
+	else 
+	{
+		
+      var temp = documetList.filter((d) => d.doc_id == id);
+      if (temp.length > 0) {
+        Amount = Number(Amount) - Number(temp[0].doc_fee);
+        Amount = Amount.toFixed(2);
+      }
+    }
+  }
+
+  /*if (Amount < 0) {
+    Amount = 0;
+  }
+  $("#lblAmount").html(
+    "The total amount to be paid: " + " <b>" + Amount + " " + "LKR </b>"
+  );
+  if (arrDoc.length > 0) {
+    $("#divBtn").show();
+  } else {
+    $("#divBtn").hide();
+  }*/
+}
+function BuildPriceTable(i)
+{
+	var polAmt = 0.0;
+	$("#divAmountDetails").show();
+	  //var type = $("#ddlDocType").val();
+	  var temp = [];
+	  var list = "";
+	  $("#amoutDetailsBody").empty();
+	  for(var j=1;j<=i;j++)
+	  {		
+		  var amt = 0;  
+		  //if(type == 2)
+		  //{
+			  $("input:checkbox[name=documentsType"+ j +"]:checked").each(function () 
+			  {
+				temp.push($(this).val());
+			  });
+			  for(var d=0;d<temp.length;d++)
+			  {
+				  var arrId = temp[d].split('_');
+				  if(arrId[0] == j)
+				  {
+					  var temp1 = documetList.filter((d) => d.doc_id == arrId[1]);
+					  if (temp1.length > 0) {
+						//amt = Number(amt) - Number(temp1[0].doc_fee);
+						amt = Number(amt) + Number(temp1[0].doc_fee);
+						amt = amt.toFixed(2);
+					  }
+				  }
+			  }
+			  
+			  var name = $("#txtFirstName"+j).val().trim();//removeHTMLTag($("#txtFirstName"+j).val().trim());
+			  list += "<tr>";
+			  list += "<td>" + j + "</td>";
+			  list += "<td>" + name + "</td>";
+			  list += "<td>" + amt + "</td>";
+			  list += "</tr>";
+		  /*}	
+          else if(type == 1)
+		  {
+			  var temp1 = documetList.filter((d) => d.doc_id == PoliceDocId);
+			  if (temp1.length > 0) 
+			  {
+				 amt = Number(amt) + Number(temp1[0].doc_fee);
+				 amt = amt.toFixed(2);
+				 polAmt = Number(polAmt) + Number(amt);
+				 polAmt = polAmt.toFixed(2);
+			  }
+			  var name = $("#txtFirstName"+j).val().trim();
+			  list += "<tr>";
+			  list += "<td>" + j + "</td>";
+			  list += "<td>" + name + "</td>";
+			  list += "<td>" + amt + "</td>";
+			  list += "</tr>";
+		  }*/
+	  }
+	  list += "<tr>";
+	  list += "<td colspan='2' style='text-align: right ! important;' >Total</td>";
+	  /*if(type == 2)
+	  {
+		list += "<td>"+ Amount+"</td>";
+	  }
+	  else
+	  {
+		list += "<td>"+ polAmt+"</td>";
+	  }*/
+	  list += "<td>"+ Amount+"</td>";
+	  list += "</tr>";
+	  
+	  $("#amoutDetailsBody").append(list);
+}
+function ValidateDocument(no)
+{
+	var res = true;
+	var arrDoc = [];
+	var totDoc = $("#txtDoc").val().trim();
+	for(var i=1;i<=no;i++)
+	{
+		$("input:checkbox[name=documentsType"+ i +"]:checked").each(function () {
+		  arrDoc.push($(this).val());
+		});
+	}
+
+	if(arrDoc.length <= totDoc)
+	{
+		res = true;
+	}
+	else
+	{
+		alert("Selected document does not match the total no. of documents");
+		res = false;
+	}
+	return res;
+}
+function CheckDuplicateNationalityId(no)
+{
+	var res = true;
+	var arrName = [];
+	for(var i=1;i<=no;i++)
+	{
+		var fn = $("#txtNationalId" + i).val().trim();
+		if(fn != "")
+		{
+			arrName.push(fn);
+		}
+	}
+	arrName.map(x => typeof x === 'string' ? x.toLowerCase() : x);
+	var result =  Array.from(new Set(arrName));
+	if(arrName.length != result.length)
+	{
+		res = false;
+	}
+	if(!res)
+	{
+		alert("Duplicate Nationality Id not allowed.");
+	}
+	return res;
+}
+function CheckDuplicatePassport(no)
+{
+	var res = true;
+	var arrName = [];
+	for(var i=1;i<=no;i++)
+	{
+		var fn = $("#txtPassportNo" + i).val().trim();
+		arrName.push(fn.toLowerCase());
+	}
+	arrName.map(x => typeof x === 'string' ? x.toLowerCase() : x);
+	var result =  Array.from(new Set(arrName));
+	if(arrName.length != result.length)
+	{
+		res = false;
+	}
+	if(!res)
+	{
+		alert("Duplicate PassportNo not allowed.");
+	}
+	return res;
+}
+function GetDetails(no)
+{
+	
+	var docNo = 0, passport = "", delPassport = "", encryptedDelPass = "", delName = "", delPass = "", delNatId = "";
+
+	docNo = $("#ddlApplicant").val();
+	var doc = GetDocumentDetails(no);
+	docNo = doc.length;
+	var vId = $("#ddlVAC1").val();
+	var totDoc = 0;
+	totDoc = $("#txtDoc").val();
+
+
+	var ownerId = $("#ddlDocOwner"+no).val();
+	var fn = $("#txtFirstName"+no).val().trim();
+	var ln = $("#txtLastName"+no).val().trim();
+	var dob = $("#txtDOB"+no).val().trim();
+	var passport = $("#txtPassportNo"+no).val().trim();
+	var doe = $("#txtDOE"+no).val().trim();
+	var gender = $("#ddlGender"+no).val();
+	var nationality = $("#ddlNationality"+no).val();
+	var contact = $("#txtContactNo"+no).val().trim();
+	var phone = $("#txtSecondaryPhone" + no).val().trim();
+	var nationalId = $("#txtNationalId" + no).val().trim();
+	var place = $("#txtBirthPlace" + no).val().trim();
+	var country = $("#ddlBirthCountry" + no).val();
+	var marSts = $("#ddlMaritalSts" + no).val();
+	var add = $("#txtAddress" + no).val().trim();
+	var isDel = $("#ddlDelegate" + no).val();
+
+	if(isDel == 2)
+	{
+		delName = $("#txtDelegateName" + no).val().trim();
+		delPass = $("#txtDelegatePassNo" + no).val().trim();
+		delNatId = $("#txtDelegateNatId" + no).val().trim();
+	}
+
+
+	var doc = GetDocumentDetails(no);
+
+	var str1 = sessionToken.substring(0, 16);
+	var str2 = sessionToken.substring(16, 32);
+	var key = CryptoJS.enc.Utf8.parse(str1);
+	var iv = CryptoJS.enc.Utf8.parse(str2);
+	var encryptedPass = CryptoJS.AES.encrypt(
+	  CryptoJS.enc.Utf8.parse(passport),
+	  key,
+	  { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
+	);
+	var encDelPass = "";
+	if(delPass != "")
+	{
+		encDelPass = CryptoJS.AES.encrypt(
+		  CryptoJS.enc.Utf8.parse(delPass),
+		  key,
+		  { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
+		);
+	}
+
+
+	var params = {
+	  session_id: sessionId, 
+	  session_token: sessionToken,
+	  vac_id: vId,
+	  owner_id: ownerId,  
+	  first_name: fn,
+	  last_name: ln,
+	  dob: dob,
+	  passport_number: encryptedPass.toString(),
+	  passport_expiry_date: doe,
+	  gender: gender,
+	  nationality: nationality,
+	  contact_number: contact,
+	  secondary_phone: phone,
+	  national_id: nationalId,
+	  place_of_birth: place,
+	  country_of_birth: country,
+	  marital_status: marSts,
+	  delivery_address: add,
+	  delegate_name: delName,
+	  delegate_passport_no: encDelPass.toString(), 
+	  delegate_national_id: delNatId, 
+	  documentDetails: doc
+	}
+	if(delPass == "")
+	{
+		delete params["delegate_passport_no"];
+	}
+	if(isDel == 1)
+	{
+		delete params["delegate_name"];
+		delete params["delegate_passport_no"];
+		delete params["delegate_national_id"];
+	}
+    return params;	
+}
+function CheckDuplicateDelegate(flag, i)
+{
+	//1-NationalityId,2-Passport
+	var res = true;
+	var chkVal1 = "", chkVal2 = "";
+	if(flag == 1)
+	{				
+		chkVal1 = $("#txtNationalId"+i).val().trim();
+		chkVal2 = $("#txtDelegateNatId"+i).val().trim();
+		
+		if(chkVal1 != "")
+		{
+			if(chkVal1 != "")
+			{
+				chkVal1 = chkVal1.toLowerCase();
+			}
+			if(chkVal2 != "")
+			{
+				chkVal2 = chkVal2.toLowerCase();
+			}
+			if(chkVal1 == chkVal2)
+			{			
+				$("#txtNationalId"+i).css('border-color', 'red');
+				$("#txtDelegateNatId"+i).css('border-color', 'red');
+				res = false;
+			}
+		}
+	}
+	else if(flag == 2)
+	{
+		chkVal1 = $("#txtPassportNo"+i).val().trim();
+		chkVal2 = $("#txtDelegatePassNo"+i).val().trim();
+		if(chkVal1 != "")
+		{
+			if(chkVal1 != "")
+			{
+				chkVal1 = chkVal1.toLowerCase();
+			}
+			if(chkVal2 != "")
+			{
+				chkVal2 = chkVal2.toLowerCase();
+			}
+			if(chkVal1 == chkVal2)
+			{
+				$("#txtPassportNo"+i).css('border-color', 'red');
+				$("#txtDelegatePassNo"+i).css('border-color', 'red');
+				res = false;
+			}
+		}
+	}
+	return res;
+}
+function CheckDuplicatePassport_Nationality(flag, i)
+{
+	//1-Applicant,2-Delegate
+	var res = true;
+	var chkVal1 = "", chkVal2 = "";
+	if(flag == 1)
+	{
+		
+		chkVal1 = $("#txtPassportNo"+i).val().trim();
+		chkVal2 = $("#txtNationalId"+i).val().trim();
+		if(chkVal2 != "")
+		{
+			if(chkVal1 != "")
+			{
+				chkVal1 = chkVal1.toLowerCase();
+			}
+			if(chkVal2 != "")
+			{
+				chkVal2 = chkVal2.toLowerCase();
+			}
+			if(chkVal1 == chkVal2)
+			{
+				$("#txtPassportNo"+i).css('border-color', 'red');
+				$("#txtNationalId"+i).css('border-color', 'red');
+				res = false;
+			}
+		}
+	}
+	else if(flag == 2)
+	{
+		chkVal1 = $("#txtDelegatePassNo"+i).val().trim();
+		chkVal2 = $("#txtDelegateNatId"+i).val().trim();
+		if(chkVal1 != "")
+		{
+			if(chkVal1 != "")
+			{
+				chkVal1 = chkVal1.toLowerCase();
+			}
+			if(chkVal2 != "")
+			{
+				chkVal2 = chkVal2.toLowerCase();
+			}
+			if(chkVal1 == chkVal2)
+			{
+				$("#txtDelegatePassNo"+i).css('border-color', 'red');
+				$("#txtDelegateNatId"+i).css('border-color', 'red');
+				res = false;
+			}
+		}
+	}
+	return res;
+}
+function ShowApplicant(no)
+{	
+	var is_delegate = 0;
+	var res = true;
+	var res1 = true;
+	var res2 = true;
+	var res3 = true;
+	var res4 = true;
+	var res5 = true;
+	var res6 = true;
+	var res7 = true;
+	res = Validation(no);
+	if(res)
+	{
+		res1 = ValidateDocument(no);
+	}
+	if(res1)
+	{
+		res2 = CheckDuplicateNationalityId(no);
+	}
+	if(res2)
+	{
+		res3 = CheckDuplicatePassport(no);
+	}
+	if(res3)
+	{
+		res6 = CheckDuplicatePassport_Nationality(1, no);
+	}
+	var is_del = $("#ddlDelegate"+no).val();
+	
+	if(is_del == 2)
+	{
+		if(res6)
+		{
+			res4 = CheckDuplicateDelegate(1, no);
+		}
+		if(res4)
+		{
+			res5 = CheckDuplicateDelegate(2, no);
+		}
+		if(res5)
+		{
+			res7 = CheckDuplicatePassport_Nationality(2, no);
+		}
+	}
+	console.log(res,"-",res1,"-",res2,"-",res3,"-",res4,"-",res5,"-",res6,"-",res7);
+	if(res == true && res1 == true && res2 == true && res3 == true && res4 == true && res5 == true && res6 == true && res7 == true)
+	{
+		var params = GetDetails(no);
+		CheckDocument(params, no, 1);	
+	}
+}
+function ContinueNextApplicant(no, flag)
+{
+	if(flag == 1)
+	{
+		$("#lst_"+(no+1)).show();
+		$("#Applicant_tab_"+(no+1)).addClass('active');
+		$("#Applicant_"+(no+1)).addClass('show active');
+			
+		$("#Applicant_tab_"+no).removeClass('active');
+		$("#Applicant_"+no).removeClass('show active');
+			
+			//$("a[href='"+id1+"']").tab("show");
+		$('html, body').animate({
+					'scrollTop' : $("#divApplicants").position().top
+		}, 0);
+		$("#divShow_"+ (no+1)).show();
+		LoadOwner(no+1);
+		$("#btnApp_"+no).hide();
+        $("#btnEdit_"+no).show();		
+	}
+	else 
+	{
+		//$("#btnBack_"+no).hide();
+		$("#btnCon").hide();
+	    //$("#divBtn").show();
+		DisableButtons(no);
+		$("#divIns").show();
+		$("#divMsg").show();
+	}
+	//$("#btnBack_"+(no+1)).show();
+	BuildPriceTable(no);
+	DisableFields(no);
+	
+}
+function onChangeCheck()
+{
+	if($('#Chk1').is(':checked'))
+	{
+		$("#divBtn").show();
+	}
+	else
+	{
+		$("#divBtn").hide();
+	}
+}
+function DisableButtons(no)
+{
+	for(var i=1;i<=no;i++)
+	{
+		$("#btnEdit_"+i).hide();
+		$("#btnApp_"+i).hide();
+		$("#btnBack_"+i).hide();
+	}
+}
+function PreviousApplicant(no)
+{
+	$("#lst_"+(no-1)).show();
+	$("#Applicant_tab_"+(no-1)).addClass('active');
+	$("#Applicant_"+(no-1)).addClass('show active');
+			
+	$("#Applicant_tab_"+no).removeClass('active');
+	$("#Applicant_"+no).removeClass('show active');
+			
+			//$("a[href='"+id1+"']").tab("show");
+	$('html, body').animate({
+				'scrollTop' : $("#divApplicants").position().top
+	}, 0);
+	
+	$("#divShow_"+ (no-1)).show();
+	$("#btnEdit_"+(no-1)).show();
+	$("#btnApp_"+(no-1)).hide();
+}
+function EditApplicant(i)
+{
+	if(i == 1)
+	{
+		$("#txtDelegateName1").attr('disabled',false);
+		$("#txtDelegatePassNo1").attr('disabled',false);
+		//$("#txtAppDt1").attr('disabled',false);		
+	}
+	$("#ddlDocOwner" + i).attr('disabled',false);
+	$("#txtFirstName" + i).attr('disabled',false);
+	$("#txtLastName" + i).attr('disabled',false);
+	$("#txtDOB" + i).attr('disabled',false);
+	$("#txtPassportNo" + i).attr('disabled',false);
+	$("#txtDOE" + i).attr('disabled',false);
+	$("#ddlGender" + i).attr('disabled',false);
+	$("#ddlNationality" + i).attr('disabled',false);
+	$("#txtContactNo" + i).attr('disabled',false);
+	
+	$("#txtSecondaryPhone" + i).attr('disabled',false);
+	$("#txtNationalId" + i).attr('disabled',false);
+	$("#txtBirthPlace" + i).attr('disabled',false);
+	$("#ddlBirthCountry" + i).attr('disabled',false);
+	$("#ddlMaritalSts" + i).attr('disabled',false);
+	$("#txtAddress" + i).attr('disabled',false);
+	
+	
+	$("input[name=documentsType"+ i +"]").prop('disabled', false);
+	$("#btnApp_"+i).show();
+	$("#btnEdit_"+i).hide();
+}
+function DisableFields(i)
+{
+	$("#ddlDocOwner" + i).attr('disabled',true);
+	$("#txtDelegateName1").attr('disabled',true);
+	$("#txtDelegatePassNo1").attr('disabled',true);
+	$("#ddlVAC" + i).attr('disabled',true);
+	$("#txtFirstName" + i).attr('disabled',true);
+	$("#txtLastName" + i).attr('disabled',true);
+	$("#txtDOB" + i).attr('disabled',true);
+	$("#txtPassportNo" + i).attr('disabled',true);
+	$("#txtDOE" + i).attr('disabled',true);
+	$("#ddlGender" + i).attr('disabled',true);
+	$("#ddlNationality" + i).attr('disabled',true);
+	$("#txtContactNo" + i).attr('disabled',true);
+	
+	$("#txtSecondaryPhone" + i).attr('disabled',true);
+	$("#txtNationalId" + i).attr('disabled',true);
+	$("#txtBirthPlace" + i).attr('disabled',true);
+	$("#ddlBirthCountry" + i).attr('disabled',true);
+	$("#ddlMaritalSts" + i).attr('disabled',true);
+	$("#txtAddress" + i).attr('disabled',true);
+	
+	$("#ddlDelegate" + i).attr('disabled',true);
+	$("#txtDelegateName" + i).attr('disabled',true);
+	$("#txtDelegatePassNo" + i).attr('disabled',true);
+	$("#txtDelegateNatId" + i).attr('disabled',true);
+	
+	
+	$("input[name=documentsType"+ i +"]").prop('disabled', true);
+}
+function CheckTotalDocuments(no)
+{
+	var res = true;
+	var arrDoc = [];
+	var totDoc = $("#txtDoc").val().trim();
+	for(var i=1;i<=no;i++)
+	{
+		$("input:checkbox[name=documentsType"+ i +"]:checked").each(function () {
+		  arrDoc.push($(this).val());
+		});
+	}
+
+	if(arrDoc.length == totDoc)
+	{
+		res = true;
+	}
+	else
+	{
+		alert("Selected document does not match the total no. of documents");
+		res = false;
+	}
+	return res;
+}
+function ContinueSubmit(no)
+{
+	var is_delegate = 0;
+	var res = true;
+	var res1 = true;
+	var res2 = true;
+	var res3 = true;
+	var res4 = true;
+	var res5 = true;
+	var res6 = true;
+	var res7 = true;
+	var res8 = true;
+	res = Validation(no);
+	
+	res1 = ValidateDocument(no);
+	res4 = CheckTotalDocuments(no);
+	res2 = CheckDuplicateNationalityId(no);
+	res3 = CheckDuplicatePassport(no);
+	res7 = CheckDuplicatePassport_Nationality(1, no);
+	
+	var is_del = $("#ddlDelegate"+no).val();
+	if(is_del == 2)
+	{
+		res5 = CheckDuplicateDelegate(1, no);
+		res6 = CheckDuplicateDelegate(2, no);
+		res8 = CheckDuplicatePassport_Nationality(2, no);
+	}
+	console.log(res,"-",res1,"-",res2,"-",res3,"-",res4,"-",res5);
+	
+	
+	if(res == true && res1 == true && res2 == true && res3 == true && res4 == true && res5 == true && res6 == true && res7 == true && res8 == true)
+	{
+		var params = GetDetails(no);
+		CheckDocument(params, no, 2);
+	}	
+}
+function Validation(i) {
+  //var type = $("#ddlDocType").val();
+  
+  $("#ddlDocOwner" + i).css("border-color", "#ccc");
+  $("#txtDelegateName1").css("border-color", "#ccc");
+  $("#txtDelegatePassNo1").css("border-color", "#ccc");
+  $("#ddlVAC" + i).css("border-color", "#ccc");
+  $("#txtFirstName" + i).css("border-color", "#ccc");
+  $("#txtLastName" + i).css("border-color", "#ccc");
+  $("#txtDOB" + i).css("border-color", "#ccc");
+  $("#txtPassportNo" + i).css("border-color", "#ccc");
+  $("#txtDOE" + i).css("border-color", "#ccc");
+  $("#ddlGender" + i).css("border-color", "#ccc");
+  $("#ddlNationality" + i).css("border-color", "#ccc");
+  $("#txtContactNo" + i).css("border-color", "#ccc");
+  
+  $("#txtSecondaryPhone" + i).css("border-color", "#ccc");
+  $("#txtNationalId" + i).css("border-color", "#ccc");
+  $("#txtBirthPlace" + i).css("border-color", "#ccc");
+  $("#ddlBirthCountry" + i).css("border-color", "#ccc");
+  $("#ddlMaritalSts" + i).css("border-color", "#ccc");
+  $("#txtAddress" + i).css("border-color", "#ccc");
+  $("#ddlDelegate" + i).css("border-color", "#ccc");  
+  
+
+
+  var res = true;
+  var owner = $("#ddlDocOwner" + i).val();
+  if(owner == 0) {
+	 $("#ddlDocOwner" + i).css("border-color", "red");
+	 $("#ddlDocOwner" + i).focus();
+	 res = false;
+  }  
+  if(res)
+  {
+	  var vac = $("#ddlVAC" + i).val();
+	  if (vac == 0) {
+		$("#ddlVAC" + i).css("border-color", "red");
+		$("#ddlVAC" + i).focus();
+		res = false;
+	  }
+  }
+  if(res) {
+    var fn = $("#txtFirstName" + i).val().trim();
+    var res = ValidateFields("#txtFirstName" + i, fn, 1, "FirstName");
+  }
+  if(res) {
+    var ln = $("#txtLastName" + i).val().trim();
+    var res = ValidateFields("#txtLastName" + i, ln, 1, "LastName");
+  }
+  if(res) 
+  {
+    var dob = $("#txtDOB" + i).val().trim();
+    if (dob == "") {
+      $("#txtDOB" + i).css("border-color", "red");
+      $("#txtDOB" + i).focus();
+      res = false;
+    }
+  }
+  if(res) {
+    var passport = $("#txtPassportNo" + i).val().trim();
+    var res = ValidateFields("#txtPassportNo" + i, passport, 4, "PassportNo.");
+  }
+  if(res) {
+    var doe = $("#txtDOE" + i).val().trim();
+    if (doe == "") {
+      $("#txtDOE" + i).css("border-color", "red");
+      $("#txtDOE" + i).focus();
+      res = false;
+    }
+  }
+  if(res) {
+    var gender = $("#ddlGender" + i).val();
+    if (gender == 0) {
+      $("#ddlGender" + i).css("border-color", "red");
+      $("#ddlGender" + i).focus();
+      res = false;
+    }
+  }
+  if(res) 
+  {
+    var nationality = $("#ddlNationality" + i).val();
+    if (nationality == 0) {
+      $("#ddlNationality" + i).css("border-color", "red");
+      $("#ddlNationality" + i).focus();
+      res = false;
+    }
+  }
+  if(res) 
+  {
+    var contact = $("#txtContactNo" + i).val().trim();
+    var res = ValidateFields("#txtContactNo" + i, contact, 2, "ContactNo.");
+  }
+  if(res) 
+  {
+    var secondaryPhone = $("#txtSecondaryPhone" + i).val().trim();
+    var res = ValidateFields("#txtSecondaryPhone" + i, secondaryPhone, 2, "SecondaryPhone");
+  }
+  if(res) 
+  {	  
+	var dob = $("#txtDOB" + i).val().trim();
+	var age = GetAge(dob); 
+	
+    var nationalId = $("#txtNationalId" + i).val().trim();
+	if(age >= 18)
+	{
+		var res = ValidateFields("#txtNationalId" + i, nationalId, 10, "NationalId");
+
+		if (!ValidateXSS(nationalId, "NationalId")) 
+		{
+			$("#txtNationalId" + i).css('border-color', 'red');
+			$("#txtNationalId" + i).focus();
+			res = false;
+		}
+	}
+	else
+	{
+		var res = ValidateFields("#txtNationalId" + i, nationalId, 11, "NationalId");
+		
+		if (!ValidateXSS(nationalId, "NationalId")) 
+		{
+			$("#txtNationalId" + i).css('border-color', 'red');
+			$("#txtNationalId" + i).focus();
+			res = false;
+		}
+	}
+	
+  }
+  if(res) 
+  {
+    var place = $("#txtBirthPlace" + i).val().trim();
+    var res = ValidateFields("#txtBirthPlace" + i, place, 6, "BirthPlace");
+  }
+  
+  if(res)
+  {
+	  var bc = $("#ddlBirthCountry" + i).val();
+	  if (bc == 0) {
+		$("#ddlBirthCountry" + i).css("border-color", "red");
+		$("#ddlBirthCountry" + i).focus();
+		res = false;
+	  }
+  }
+
+  if(res)
+  {
+	  var marSts = $("#ddlMaritalSts" + i).val();
+	  if (marSts == 0) {
+		$("#ddlMaritalSts" + i).css("border-color", "red");
+		$("#ddlMaritalSts" + i).focus();
+		res = false;
+	  }
+  }
+  
+  if(res) 
+  {
+    var add = $("#txtAddress" + i).val().trim();
+    var res = ValidateFields("#txtAddress" + i, add, 5, "Address");
+  }
+  
+  var isDel = $("#ddlDelegate" + i).val();
+  if(res) 
+  {	  
+	  if (isDel == 0) 
+	  {
+		$("#ddlDelegate" + i).css("border-color", "red");
+		$("#ddlDelegate" + i).focus();
+		res = false;
+	  }
+	  /*if(res == true && isDel == 2)
+	  {
+		  var delName = $("#txtDelegateName"+i).val().trim();
+		  res = ValidateFields("#txtDelegateName"+i, delName, 8, "DelegateName");
+		  if(res)
+		  {
+			  var delPassNo = $("#txtDelegatePassNo"+i).val().trim();
+			  if(delPassNo != "")
+			  {
+				  res = ValidateFields("#txtDelegatePassNo"+i, delPassNo, 9, "DelegatePassportNo");
+			  }
+		  }
+	  }*/
+  }
+
+  if(res)
+  {
+	 if(isDel == 2) 
+	 {
+		var delName = $("#txtDelegateName"+i).val().trim();
+		res = ValidateFields("#txtDelegateName"+i, delName, 8, "DelegateName"); 
+		if(res)
+		{
+			var delPassNo = $("#txtDelegatePassNo"+i).val().trim();
+			if(delPassNo != "")
+			{
+				res = ValidateFields("#txtDelegatePassNo"+i, delPassNo, 9, "DelegatePassportNo");
+			}
+		}
+		if(res)
+		{
+			var delNatId = $("#txtDelegateNatId" + i).val().trim();
+			var res = ValidateFields("#txtDelegateNatId" + i, delNatId, 10, "DelegateNationalId");
+			if (!ValidateXSS(delNatId, "DelegateNationalId")) 
+			{
+				$("#txtDelegateNatId" + i).css('border-color', 'red');
+				$("#txtDelegateNatId" + i).focus();
+				res = false;
+			}
+		}
+	 }
+  }	
+  //if(type == 2)
+  //{
+	  if(res) 
+	  {
+		var arrDoc = [];
+		$("input:checkbox[name=documentsType"+ i +"]:checked").each(function () {
+		  arrDoc.push($(this).val());
+		});
+		if (arrDoc.length == 0) {
+		  alert("Select atleast 1");
+		  res = false;
+		} else if (arrDoc.length > 3) {
+		  alert("Max 3 allowed");
+		  res = false;
+		}
+	  }
+  //}
+  return res;
+}
+function GetDocumentDetails(i) 
+{
+	docDetails = [];
+	var arrDoc = [];
+	/*var type = $("#ddlDocType").val();
+	if(type == 1)
+	{
+		var params = {		
+		  doc_id: PoliceDocId
+		};
+		docDetails.push(params);
+	}
+	else
+	{*/
+		$("input:checkbox[name=documentsType"+ i +"]:checked").each(function () {
+		arrDoc.push($(this).val());
+		var id = $(this).val().split('_');
+		var params = {		
+		  doc_id: id[1]
+		};
+		docDetails.push(params);
+	  });
+	//}
+  return docDetails;
+}
+function GetTotalDocuments(no)
+{
+	var total = 0;
+	var arrDoc = [];
+	for(var i=1;i<=no;i++)
+	{
+		$("input:checkbox[name=documentsType"+ i +"]:checked").each(function () {
+			arrDoc.push($(this).val());
+		});
+	}
+	total = arrDoc.length;
+	return total;
+}
+function GetApplicantDetails(appNo)
+{
+	appDetails = [];
+	for(var i=1;i<=appNo;i++)
+	{
+		var delName = "", delPass = "";
+		var ownerId = $("#ddlDocOwner"+i).val();
+		//if(i == 1)
+		//{
+			delName = $("#txtDelegateName1").val().trim();
+			delPass = $("#txtDelegatePassNo1").val().trim();
+		//}
+		var fn = $("#txtFirstName"+i).val().trim();
+		var ln = $("#txtLastName"+i).val().trim();
+		var dob = $("#txtDOB"+i).val().trim();
+		var passport = $("#txtPassportNo"+i).val().trim();
+		var doe = $("#txtDOE"+i).val().trim();
+		var gender = $("#ddlGender"+i).val();
+		var nationality = $("#ddlNationality"+i).val();
+		var contact = $("#txtContactNo"+i).val().trim();
+		var phone = $("#txtSecondaryPhone" + i).val().trim();
+		var nationalId = $("#txtNationalId" + i).val().trim();
+		var place = $("#txtBirthPlace" + i).val().trim();
+		var country = $("#ddlBirthCountry" + i).val();
+		var marSts = $("#ddlMaritalSts" + i).val();
+		var add = $("#txtAddress" + i).val().trim();
+		//var appDt = $("#txtAppDt1").val();
+		
+		var doc = GetDocumentDetails(i);
+		
+		var str1 = sessionToken.substring(0, 16);
+		var str2 = sessionToken.substring(16, 32);
+		var key = CryptoJS.enc.Utf8.parse(str1);
+		var iv = CryptoJS.enc.Utf8.parse(str2);
+		var encryptedPass = CryptoJS.AES.encrypt(
+		  CryptoJS.enc.Utf8.parse(passport),
+		  key,
+		  { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
+		);
+		var encDelPass = "";
+		if(delPass != "")
+		{
+			encDelPass = CryptoJS.AES.encrypt(
+			  CryptoJS.enc.Utf8.parse(delPass),
+			  key,
+			  { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }
+			);
+		}
+		
+		var params = {
+		  owner_id: ownerId,
+		  delegate_name: delName,
+		  delegate_passport: encDelPass.toString(),
+		  first_name: fn,
+		  last_name: ln,
+		  dob: dob,
+		  passport_number: encryptedPass.toString(),
+		  passport_expiry_date: doe,
+		  gender: gender,
+		  nationality: nationality,
+		  contact_number: contact,
+		  secondary_phone: phone,
+		  national_id: nationalId,
+		  place_of_birth: place,
+		  country_of_birth: country,
+		  marital_status: marSts,
+		  delivery_address: add,
+		  //preferred_appointment_date: appDt,		  
+		  documentDetails: doc
+		}
+		/*if(i > 1)
+		{
+			delete params["delegate_name"];
+			delete params["delegate_passport"];
+		}*/
+		appDetails.push(params);	
+	}
+}
+function SubmitValues() 
+{
+	
+	var no = $("#ddlApplicant").val();	
+	var vac = $("#ddlVAC1").val();
+	//var type = $("#ddlDocType").val();
+	var tot = GetTotalDocuments(no);
+	/*if(type == 1)
+	{
+		tot = no;
+	}
+	else
+	{
+		tot = GetTotalDocuments(no);
+	}*/
+	GetApplicantDetails(no);
+	var obj = {
+      session_id: sessionId,
+      session_token: sessionToken,
+      captcha_id: captchaId,
+      vac_id: vac,
+	  total_documents: tot,
+	  //applicantDetails: appDetails
+    };
+    var Parameter = JSON.stringify(obj);
+	
+	FormSubmission(Parameter);
+}
+function ShowLoading() {
+  var loader = $("#loader");
+  loader.show();
+}
+function HideLoading() {
+  var loader = $("#loader");
+  loader.hide();
+}
+function removeHTMLTag(txt)
+{
+	var str = "";
+	str = txt.replaceAll("<" , "");
+	str = str.replaceAll(">", "");
+	str = str.replaceAll("(", "");
+	str = str.replaceAll(")", "");
+	str = str.replaceAll("'", "");
+	str = str.replaceAll(",", "");
+	str = str.replaceAll("\"", "");
+	str = str.replaceAll("/", "");
+	str = str.replaceAll("*", "");
+	str = str.replaceAll(";", "");
+	str = str.replaceAll(":", "");
+	str = str.replaceAll("=", "");
+	str = str.replaceAll("{", "");
+	str = str.replaceAll("}", "");
+	str = str.replaceAll("&lt" , "");
+	str = str.replaceAll("&gt" , "");
+	return str;
+}

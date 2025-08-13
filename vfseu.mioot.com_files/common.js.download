@@ -1,0 +1,22 @@
+var Token = "vSMXdxSjwQLhGmCy";
+var VisitorLoginURL = "/forms/ITSLLegal/api/vLogin/";
+var CaptchaURL = "/forms/ITSLLegal/api/captcha/?";
+var GetOTPURL = "/forms/ITSLLegal/api/sendOTP/";
+var ResendURL = "/forms/ITSLLegal/api/resendOTP/";
+var ValidateOTPURL = "/forms/ITSLLegal/api/validateOTP/";
+var FormSubmissionURL = "/forms/ITSLLegal/api/formSubmission/"; 
+
+var CheckSlotURL = "/forms/ITSLLegal/api/checkSlot/";
+var CheckDocURL = "/forms/ITSLLegal/api/checkDocument/";
+
+var ConfirmURL = "/forms/ITSLLegal/AppConfirmation/";
+var AppURL = "/forms/ITSLLegal/getList/";
+
+var UserLoginURL = "/forms/ITSLLegal/api/app_login/";
+var LogoutURL = "/forms/ITSLLegal/api/app_logout/";
+
+var ListURL = "https://vfseu.mioot.com/forms/ITSLLegal/list/";
+var DownloadURL = "https://vfseu.mioot.com/forms/ITSLLegal/api/download.php?getfile=";
+var StartURL = "https://vfseu.mioot.com/forms/ITSLLegal/";
+
+
