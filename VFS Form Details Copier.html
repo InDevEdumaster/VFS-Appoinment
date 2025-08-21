@@ -139,7 +139,6 @@
     <input type="text" id="deliveryAddress" name="deliveryAddress" required>
     <button type="button" onclick="copyToClipboard('deliveryAddress')">Copy</button>
 </div>
-
                 </div>
 <br>
                 <div>
@@ -163,7 +162,6 @@
                         <button type="button" onclick="copyToClipboard('delegateNationalId')">Copy</button>
                     </div>
                 </div>
-
                 <div>
                     <h3><strong>Select the documents to be legalized</strong></h3>
                     <div>
@@ -178,6 +176,10 @@
                         <div>
                             <input type="checkbox" id="policeCert" name="documents" value="Police Certificate">
                             <label for="policeCert"><strong>Police Certificate</strong></label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="gramaCert" name="documents" value="Grama Niladhari Certificate">
+                            <label for="gramaCert"><strong>Grama Niladhari Certificate</strong></label>
                         </div>
                     </div>
                 </div>
@@ -435,7 +437,8 @@
             const checkboxes = {
                 'birthCert': 'Birth Certificate',
                 'marriageCert': 'Marriage Certificate',
-                'policeCert': 'Police Certificate'
+                'policeCert': 'Police Certificate',
+                'gramaCert': 'Grama Niladhari Certificate'
             };
             
             for (const [id, value] of Object.entries(checkboxes)) {
