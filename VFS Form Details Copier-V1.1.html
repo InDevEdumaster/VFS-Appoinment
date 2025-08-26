@@ -77,8 +77,6 @@
                             <option>Male</option>
                             <option>Female</option>
                         </select>
-                        <button type="button" onclick="selectField('gender')">Select</button>
-                        <button type="button" onclick="copyToClipboard('gender')">Copy</button>
                     </div>
                 </div>
 <br>
@@ -86,7 +84,6 @@
                     <div>
                         <label for="nationality"><strong>Nationality*</strong></label>
                         <input type="text" id="nationality" name="nationality" required>
-                        <button type="button" onclick="selectField('nationality')">Select</button>
                     </div>
 <br>
                     <div>
@@ -133,7 +130,6 @@
                     <div>
                         <label for="countryOfBirth"><strong>Country of Birth*</strong></label>
                         <input type="text" id="countryOfBirth" name="countryOfBirth" required>
-                        <button type="button" onclick="selectField('countryOfBirth')">Select</button>
                     </div>
 <br>
                     <div>
@@ -343,15 +339,12 @@
             const el = document.getElementById(id);
             if (!el) return;
 
-            // For text inputs and textareas: focus and select all text.
             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                 try {
                     el.focus();
-                    // If the input supports select, do it.
                     if (typeof el.select === 'function') {
                         el.select();
                     } else {
-                        // fallback: set selection range if possible
                         if (typeof el.setSelectionRange === 'function') {
                             el.setSelectionRange(0, el.value.length);
                         }
@@ -362,7 +355,6 @@
                 return;
             }
 
-            // For SELECT elements: focus it so user can see active control.
             if (el.tagName === 'SELECT') {
                 try {
                     el.focus();
@@ -372,7 +364,6 @@
                 return;
             }
 
-            // For other elements: try to select text content by creating a temporary selection.
             try {
                 const range = document.createRange();
                 range.selectNodeContents(el);
