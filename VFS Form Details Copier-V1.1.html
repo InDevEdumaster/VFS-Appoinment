@@ -23,12 +23,14 @@
                     <div>
                         <label for="surname"><strong>Surname*</strong></label>
                         <input type="text" id="surname" name="surname" required>
+                        <button type="button" onclick="selectField('surname')">Select</button>
                         <button type="button" onclick="copyToClipboard('surname')">Copy</button>
                     </div>
 <br>
                     <div>
                         <label for="otherNames"><strong>Other Names*</strong></label>
                         <input type="text" id="otherNames" name="otherNames" required>
+                        <button type="button" onclick="selectField('otherNames')">Select</button>
                         <button type="button" onclick="copyToClipboard('otherNames')">Copy</button>
                     </div>
                 </div>
@@ -50,6 +52,7 @@
                     <div>
                         <label for="passportNo"><strong>Passport No*</strong></label>
                         <input type="text" id="passportNo" name="passportNo" required>
+                        <button type="button" onclick="selectField('passportNo')">Select</button>
                         <button type="button" onclick="copyToClipboard('passportNo')">Copy</button>
                     </div>
                 </div>
@@ -74,6 +77,8 @@
                             <option>Male</option>
                             <option>Female</option>
                         </select>
+                        <button type="button" onclick="selectField('gender')">Select</button>
+                        <button type="button" onclick="copyToClipboard('gender')">Copy</button>
                     </div>
                 </div>
 <br>
@@ -81,11 +86,13 @@
                     <div>
                         <label for="nationality"><strong>Nationality*</strong></label>
                         <input type="text" id="nationality" name="nationality" required>
+                        <button type="button" onclick="selectField('nationality')">Select</button>
                     </div>
 <br>
                     <div>
                         <label for="email"><strong>Email Id*</strong></label>
                         <input type="email" id="email" name="email" required>
+                        <button type="button" onclick="selectField('email')">Select</button>
                         <button type="button" onclick="copyToClipboard('email')">Copy</button>
                     </div>
                 </div>
@@ -94,12 +101,14 @@
                     <div>
                         <label for="primaryPhone" style="color: blue;"><strong>Primary Phone*</strong></label>
                         <input type="text" id="primaryPhone" name="primaryPhone" placeholder="7XXXXXXXXX" required>
+                        <button type="button" onclick="selectField('primaryPhone')">Select</button>
                         <button type="button" onclick="copyToClipboard('primaryPhone')">Copy</button>
                     </div>
 <br>
                     <div>
                         <label for="secondaryPhone" style="color: blue;"><strong>Secondary Phone*</strong></label>
                         <input type="text" id="secondaryPhone" name="secondaryPhone" placeholder="7XXXXXXXXX">
+                        <button type="button" onclick="selectField('secondaryPhone')">Select</button>
                         <button type="button" onclick="copyToClipboard('secondaryPhone')">Copy</button>
                     </div>
                 </div>
@@ -108,12 +117,14 @@
                     <div>
                         <label for="nationalId"><strong>National ID No</strong></label>
                         <input type="text" id="nationalId" name="nationalId">
+                        <button type="button" onclick="selectField('nationalId')">Select</button>
                         <button type="button" onclick="copyToClipboard('nationalId')">Copy</button>
                     </div>
 <br>
                     <div>
                         <label for="placeOfBirth"><strong>Place of Birth*</strong></label>
                         <input type="text" id="placeOfBirth" name="placeOfBirth" required>
+                        <button type="button" onclick="selectField('placeOfBirth')">Select</button>
                         <button type="button" onclick="copyToClipboard('placeOfBirth')">Copy</button>
                     </div>
                 </div>
@@ -122,6 +133,7 @@
                     <div>
                         <label for="countryOfBirth"><strong>Country of Birth*</strong></label>
                         <input type="text" id="countryOfBirth" name="countryOfBirth" required>
+                        <button type="button" onclick="selectField('countryOfBirth')">Select</button>
                     </div>
 <br>
                     <div>
@@ -130,6 +142,8 @@
                             <option>Single</option>
                             <option>Married</option>
                         </select>
+                        <button type="button" onclick="selectField('maritalStatus')">Select</button>
+                        <button type="button" onclick="copyToClipboard('maritalStatus')">Copy</button>
                     </div>
                 </div>
 <br>
@@ -137,6 +151,7 @@
 <div>
     <label for="deliveryAddress"><strong>Delivery Address*</strong></label>
     <input type="text" id="deliveryAddress" name="deliveryAddress" required>
+    <button type="button" onclick="selectField('deliveryAddress')">Select</button>
     <button type="button" onclick="copyToClipboard('deliveryAddress')">Copy</button>
 </div>
                 </div>
@@ -145,12 +160,14 @@
                     <div>
                         <label for="delegateName" style="color: blue;"><strong>Delegate Name</strong></label>
                         <input type="text" id="delegateName" name="delegateName">
+                        <button type="button" onclick="selectField('delegateName')">Select</button>
                         <button type="button" onclick="copyToClipboard('delegateName')">Copy</button>
                     </div>
 <br>
                     <div>
                         <label for="delegatePassport"><strong>Delegate Passport Number</strong></label>
                         <input type="text" id="delegatePassport" name="delegatePassport">
+                        <button type="button" onclick="selectField('delegatePassport')">Select</button>
                         <button type="button" onclick="copyToClipboard('delegatePassport')">Copy</button>
                     </div>
                 </div>
@@ -159,6 +176,7 @@
                     <div>
                         <label for="delegateNationalId"><strong>Delegate National ID Number</strong></label>
                         <input type="text" id="delegateNationalId" name="delegateNationalId">
+                        <button type="button" onclick="selectField('delegateNationalId')">Select</button>
                         <button type="button" onclick="copyToClipboard('delegateNationalId')">Copy</button>
                     </div>
                 </div>
@@ -189,12 +207,14 @@
                         <div>
                             <label for="cardNumber"><strong>Card Number*</strong></label>
                             <input type="text" id="cardNumber" name="cardNumber" required>
+                            <button type="button" onclick="selectField('cardNumber')">Select</button>
                             <button type="button" onclick="copyToClipboard('cardNumber')">Copy</button>
                         </div>
                 <br>
 <div>
         <label for="cardName"><strong>Card Name*</strong></label>
         <input type="text" id="cardName" name="cardName" required>
+        <button type="button" onclick="selectField('cardName')">Select</button>
         <button type="button" onclick="copyToClipboard('cardName')">Copy</button>
     </div>
 <br>
@@ -211,6 +231,7 @@
                         <div>
                             <label for="cvc"><strong>CVC Number*</strong></label>
                             <input type="text" id="cvc" name="cvc" required>
+                            <button type="button" onclick="selectField('cvc')">Select</button>
                             <button type="button" onclick="copyToClipboard('cvc')">Copy</button>
                         </div>
                     </div>
@@ -318,15 +339,65 @@
             document.getElementById('downloadButton').addEventListener('click', downloadFormData);
         });
 
+        function selectField(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+
+            // For text inputs and textareas: focus and select all text.
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                try {
+                    el.focus();
+                    // If the input supports select, do it.
+                    if (typeof el.select === 'function') {
+                        el.select();
+                    } else {
+                        // fallback: set selection range if possible
+                        if (typeof el.setSelectionRange === 'function') {
+                            el.setSelectionRange(0, el.value.length);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Select failed for', id, e);
+                }
+                return;
+            }
+
+            // For SELECT elements: focus it so user can see active control.
+            if (el.tagName === 'SELECT') {
+                try {
+                    el.focus();
+                } catch (e) {
+                    console.error('Focus failed for select', id, e);
+                }
+                return;
+            }
+
+            // For other elements: try to select text content by creating a temporary selection.
+            try {
+                const range = document.createRange();
+                range.selectNodeContents(el);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } catch (e) {
+                console.error('Selecting node contents failed for', id, e);
+            }
+        }
+
         function copyToClipboard(id) {
             const el = document.getElementById(id);
             if (!el) return;
 
             let text = '';
             if (el.tagName === 'SELECT') {
-                text = el.options[el.selectedIndex].text;
+                const selIndex = el.selectedIndex;
+                if (selIndex >= 0) {
+                    text = el.options[selIndex].text;
+                } else {
+                    text = '';
+                }
             } else {
-                text = el.value || el.textContent;
+                text = el.value || el.textContent || '';
             }
 
             if (navigator.clipboard && window.isSecureContext) {
