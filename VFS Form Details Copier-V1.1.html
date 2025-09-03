@@ -20,6 +20,14 @@
         <div>
             <form id="documentForm">
                 <div>
+                                        <div>
+                        <label for="email"><strong>Email Id*</strong></label>
+                        <input type="email" id="email" name="email" required>
+                        <button type="button" onclick="selectField('email')">Select</button>
+                        <button type="button" onclick="copyToClipboard('email')">Copy</button>
+                    </div>
+                </div>
+                <br>
                     <div>
                         <label for="surname"><strong>Surname*</strong></label>
                         <input type="text" id="surname" name="surname" required>
@@ -86,14 +94,6 @@
                         <input type="text" id="nationality" name="nationality" required>
                     </div>
 <br>
-                    <div>
-                        <label for="email"><strong>Email Id*</strong></label>
-                        <input type="email" id="email" name="email" required>
-                        <button type="button" onclick="selectField('email')">Select</button>
-                        <button type="button" onclick="copyToClipboard('email')">Copy</button>
-                    </div>
-                </div>
-<br>
                 <div>
                     <div>
                         <label for="primaryPhone" style="color: blue;"><strong>Primary Phone*</strong></label>
@@ -138,8 +138,6 @@
                             <option>Single</option>
                             <option>Married</option>
                         </select>
-                        <button type="button" onclick="selectField('maritalStatus')">Select</button>
-                        <button type="button" onclick="copyToClipboard('maritalStatus')">Copy</button>
                     </div>
                 </div>
 <br>
