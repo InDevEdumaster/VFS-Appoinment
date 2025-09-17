@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Document Legalization Form Details</title>
 </head>
 <body>
@@ -10,17 +10,15 @@
         <div>
             <h3>Document Legalization Form Details</h3>
             <div style="margin-bottom: 15px;">
-                <button id="loadButton">
-                    Load Form Data
-                </button>
+                <button id="loadButton">Load Form Data</button>
                 <input type="file" id="fileInput" accept=".json" style="display: none;">
             </div>
         </div>
         <hr>
         <div>
-            <form id="documentForm">
+            <form id="documentForm" onsubmit="return false;">
                 <div>
-                                        <div>
+                    <div>
                         <label for="email"><strong>Email Id*</strong></label>
                         <input type="email" id="email" name="email" required>
                         <button type="button" onclick="selectField('email')">Select</button>
@@ -28,21 +26,20 @@
                     </div>
                 </div>
                 <br>
-                    <div>
-                        <label for="surname"><strong>Surname*</strong></label>
-                        <input type="text" id="surname" name="surname" required>
-                        <button type="button" onclick="selectField('surname')">Select</button>
-                        <button type="button" onclick="copyToClipboard('surname')">Copy</button>
-                    </div>
-<br>
-                    <div>
-                        <label for="otherNames"><strong>Other Names*</strong></label>
-                        <input type="text" id="otherNames" name="otherNames" required>
-                        <button type="button" onclick="selectField('otherNames')">Select</button>
-                        <button type="button" onclick="copyToClipboard('otherNames')">Copy</button>
-                    </div>
+                <div>
+                    <label for="surname"><strong>Surname*</strong></label>
+                    <input type="text" id="surname" name="surname" required>
+                    <button type="button" onclick="selectField('surname')">Select</button>
+                    <button type="button" onclick="copyToClipboard('surname')">Copy</button>
                 </div>
-<br>
+                <br>
+                <div>
+                    <label for="otherNames"><strong>Other Names*</strong></label>
+                    <input type="text" id="otherNames" name="otherNames" required>
+                    <button type="button" onclick="selectField('otherNames')">Select</button>
+                    <button type="button" onclick="copyToClipboard('otherNames')">Copy</button>
+                </div>
+                <br>
                 <div>
                     <div>
                         <label><strong>Date Of Birth*</strong></label>
@@ -56,7 +53,7 @@
                             <option value="" disabled selected>Year</option>
                         </select>
                     </div>
-<br>
+                    <br>
                     <div>
                         <label for="passportNo"><strong>Passport No*</strong></label>
                         <input type="text" id="passportNo" name="passportNo" required>
@@ -64,7 +61,7 @@
                         <button type="button" onclick="copyToClipboard('passportNo')">Copy</button>
                     </div>
                 </div>
-<br>
+                <br>
                 <div>
                     <div>
                         <label><strong>Passport Expiry Date*</strong></label>
@@ -78,38 +75,40 @@
                             <option value="" disabled selected>Year</option>
                         </select>
                     </div>
-<br>
+                    <br>
                     <div>
                         <label for="gender"><strong>Gender*</strong></label>
                         <select name="gender" id="gender">
+                            <option value="">--</option>
                             <option>Male</option>
                             <option>Female</option>
                         </select>
                     </div>
                 </div>
-<br>
+                <br>
                 <div>
                     <div>
                         <label for="nationality"><strong>Nationality*</strong></label>
                         <input type="text" id="nationality" name="nationality" required>
                     </div>
-<br>
-                <div>
+                    <br>
                     <div>
-                        <label for="primaryPhone" style="color: blue;"><strong>Primary Phone*</strong></label>
-                        <input type="text" id="primaryPhone" name="primaryPhone" placeholder="7XXXXXXXXX" required>
-                        <button type="button" onclick="selectField('primaryPhone')">Select</button>
-                        <button type="button" onclick="copyToClipboard('primaryPhone')">Copy</button>
-                    </div>
-<br>
-                    <div>
-                        <label for="secondaryPhone" style="color: blue;"><strong>Secondary Phone*</strong></label>
-                        <input type="text" id="secondaryPhone" name="secondaryPhone" placeholder="7XXXXXXXXX">
-                        <button type="button" onclick="selectField('secondaryPhone')">Select</button>
-                        <button type="button" onclick="copyToClipboard('secondaryPhone')">Copy</button>
+                        <div>
+                            <label for="primaryPhone" style="color: blue;"><strong>Primary Phone*</strong></label>
+                            <input type="text" id="primaryPhone" name="primaryPhone" placeholder="7XXXXXXXXX" required>
+                            <button type="button" onclick="selectField('primaryPhone')">Select</button>
+                            <button type="button" onclick="copyToClipboard('primaryPhone')">Copy</button>
+                        </div>
+                        <br>
+                        <div>
+                            <label for="secondaryPhone" style="color: blue;"><strong>Secondary Phone*</strong></label>
+                            <input type="text" id="secondaryPhone" name="secondaryPhone" placeholder="7XXXXXXXXX">
+                            <button type="button" onclick="selectField('secondaryPhone')">Select</button>
+                            <button type="button" onclick="copyToClipboard('secondaryPhone')">Copy</button>
+                        </div>
                     </div>
                 </div>
-<br>
+                <br>
                 <div>
                     <div>
                         <label for="nationalId"><strong>National ID No</strong></label>
@@ -117,7 +116,7 @@
                         <button type="button" onclick="selectField('nationalId')">Select</button>
                         <button type="button" onclick="copyToClipboard('nationalId')">Copy</button>
                     </div>
-<br>
+                    <br>
                     <div>
                         <label for="placeOfBirth"><strong>Place of Birth*</strong></label>
                         <input type="text" id="placeOfBirth" name="placeOfBirth" required>
@@ -125,31 +124,32 @@
                         <button type="button" onclick="copyToClipboard('placeOfBirth')">Copy</button>
                     </div>
                 </div>
-<br>
+                <br>
                 <div>
                     <div>
                         <label for="countryOfBirth"><strong>Country of Birth*</strong></label>
                         <input type="text" id="countryOfBirth" name="countryOfBirth" required>
                     </div>
-<br>
+                    <br>
                     <div>
                         <label for="maritalStatus"><strong>Marital Status*</strong></label>
                         <select name="maritalStatus" id="maritalStatus">
+                            <option value="">--</option>
                             <option>Single</option>
                             <option>Married</option>
                         </select>
                     </div>
                 </div>
-<br>
+                <br>
                 <div>
-<div>
-    <label for="deliveryAddress"><strong>Delivery Address*</strong></label>
-    <input type="text" id="deliveryAddress" name="deliveryAddress" required>
-    <button type="button" onclick="selectField('deliveryAddress')">Select</button>
-    <button type="button" onclick="copyToClipboard('deliveryAddress')">Copy</button>
-</div>
+                    <div>
+                        <label for="deliveryAddress"><strong>Delivery Address*</strong></label>
+                        <input type="text" id="deliveryAddress" name="deliveryAddress" required>
+                        <button type="button" onclick="selectField('deliveryAddress')">Select</button>
+                        <button type="button" onclick="copyToClipboard('deliveryAddress')">Copy</button>
+                    </div>
                 </div>
-<br>
+                <br>
                 <div>
                     <div>
                         <label for="delegateName" style="color: blue;"><strong>Delegate Name</strong></label>
@@ -157,7 +157,7 @@
                         <button type="button" onclick="selectField('delegateName')">Select</button>
                         <button type="button" onclick="copyToClipboard('delegateName')">Copy</button>
                     </div>
-<br>
+                    <br>
                     <div>
                         <label for="delegatePassport"><strong>Delegate Passport Number</strong></label>
                         <input type="text" id="delegatePassport" name="delegatePassport">
@@ -165,7 +165,7 @@
                         <button type="button" onclick="copyToClipboard('delegatePassport')">Copy</button>
                     </div>
                 </div>
-<br>
+                <br>
                 <div>
                     <div>
                         <label for="delegateNationalId"><strong>Delegate National ID Number</strong></label>
@@ -204,14 +204,14 @@
                             <button type="button" onclick="selectField('cardNumber')">Select</button>
                             <button type="button" onclick="copyToClipboard('cardNumber')">Copy</button>
                         </div>
-                <br>
-<div>
-        <label for="cardName"><strong>Card Name*</strong></label>
-        <input type="text" id="cardName" name="cardName" required>
-        <button type="button" onclick="selectField('cardName')">Select</button>
-        <button type="button" onclick="copyToClipboard('cardName')">Copy</button>
-    </div>
-<br>
+                        <br>
+                        <div>
+                            <label for="cardName"><strong>Card Name*</strong></label>
+                            <input type="text" id="cardName" name="cardName" required>
+                            <button type="button" onclick="selectField('cardName')">Select</button>
+                            <button type="button" onclick="copyToClipboard('cardName')">Copy</button>
+                        </div>
+                        <br>
                         <div>
                             <label><strong>Expire Date*</strong></label>
                             <select id="expireMonth" name="expireMonth" required>
@@ -221,7 +221,7 @@
                                 <option value="">Year</option>
                             </select>
                         </div>
-                <br>
+                        <br>
                         <div>
                             <label for="cvc"><strong>CVC Number*</strong></label>
                             <input type="text" id="cvc" name="cvc" required>
@@ -230,18 +230,16 @@
                         </div>
                     </div>
                 </div>
-                
-<br>
-<hr>
+
+                <br>
+                <hr>
                 <div>
                     <label for="filename"><strong>Filename*</strong></label>
                     <input type="text" id="filename" name="filename" required>
                 </div>
-                
+
                 <div style="margin-top: 20px;">
-                    <button type="button" id="downloadButton" disabled>
-                        Download Form Data
-                    </button>
+                    <button type="button" id="downloadButton" disabled>Download Form Data</button>
                 </div>
             </form>
         </div>
@@ -253,41 +251,42 @@
     <div id="loadSuccess" style="display:none; background-color: #dff0d8; padding: 10px; margin-top: 10px;">
         Form data loaded successfully!
     </div>
-<br>
-<br><br><br><br><br><br>
+
     <script>
+        /* ---------- helpers to populate select boxes ---------- */
         function populateDateSelectors(dayId, monthId, yearId, startYear, endYear) {
             const daySelect = document.getElementById(dayId);
             const monthSelect = document.getElementById(monthId);
             const yearSelect = document.getElementById(yearId);
-            
+
+            // remove existing options except first placeholder
             while (daySelect.options.length > 1) daySelect.remove(1);
             while (monthSelect.options.length > 1) monthSelect.remove(1);
             while (yearSelect.options.length > 1) yearSelect.remove(1);
-            
+
             for (let d = 1; d <= 31; d++) {
                 const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d;
+                opt.value = String(d);
+                opt.textContent = String(d);
                 daySelect.appendChild(opt);
             }
-            
+
             const months = [
                 'January','February','March','April','May','June',
                 'July','August','September','October','November','December'
             ];
             months.forEach((m, index) => {
                 const opt = document.createElement('option');
-                opt.value = index + 1;
+                opt.value = String(index + 1);
                 opt.textContent = m;
                 monthSelect.appendChild(opt);
             });
-            
+
             const increment = startYear <= endYear ? 1 : -1;
             for (let y = startYear; (increment > 0 ? y <= endYear : y >= endYear); y += increment) {
                 const opt = document.createElement('option');
-                opt.value = y;
-                opt.textContent = y;
+                opt.value = String(y);
+                opt.textContent = String(y);
                 yearSelect.appendChild(opt);
             }
         }
@@ -295,57 +294,37 @@
         function populateExpirationDate(monthId, yearId, startYear, endYear) {
             const monthSelect = document.getElementById(monthId);
             const yearSelect = document.getElementById(yearId);
-            
+
             while (monthSelect.options.length > 1) monthSelect.remove(1);
             while (yearSelect.options.length > 1) yearSelect.remove(1);
-            
+
             for (let m = 1; m <= 12; m++) {
                 const opt = document.createElement('option');
-                const monthValue = m < 10 ? '0' + m : m.toString();
+                const monthValue = m < 10 ? '0' + m : String(m);
                 opt.value = monthValue;
                 opt.textContent = monthValue;
                 monthSelect.appendChild(opt);
             }
-            
+
             for (let y = startYear; y <= endYear; y++) {
                 const opt = document.createElement('option');
-                opt.value = y;
-                opt.textContent = y;
+                opt.value = String(y);
+                opt.textContent = String(y);
                 yearSelect.appendChild(opt);
             }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const currentDate = new Date();
-            const currentYear = currentDate.getFullYear();
-            const currentMonth = currentDate.getMonth() + 1;
-            const currentDay = currentDate.getDate();
-            
-            populateDateSelectors('dobDay', 'dobMonth', 'dobYear', 1900, currentYear);
-            populateDateSelectors('expDay', 'expMonth', 'expYear', currentYear, currentYear + 10);
-            populateExpirationDate('expireMonth', 'expireYear', currentYear, currentYear + 10);
-            
-            document.getElementById('loadButton').addEventListener('click', function() {
-                document.getElementById('fileInput').click();
-            });
-            
-            document.getElementById('fileInput').addEventListener('change', loadFormData);
-            document.getElementById('downloadButton').addEventListener('click', downloadFormData);
-        });
-
+        /* ---------- select and copy helpers ---------- */
         function selectField(id) {
             const el = document.getElementById(id);
             if (!el) return;
-
             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
                 try {
                     el.focus();
                     if (typeof el.select === 'function') {
                         el.select();
-                    } else {
-                        if (typeof el.setSelectionRange === 'function') {
-                            el.setSelectionRange(0, el.value.length);
-                        }
+                    } else if (typeof el.setSelectionRange === 'function') {
+                        el.setSelectionRange(0, el.value.length);
                     }
                 } catch (e) {
                     console.error('Select failed for', id, e);
@@ -354,11 +333,7 @@
             }
 
             if (el.tagName === 'SELECT') {
-                try {
-                    el.focus();
-                } catch (e) {
-                    console.error('Focus failed for select', id, e);
-                }
+                try { el.focus(); } catch (e) { console.error(e); }
                 return;
             }
 
@@ -380,11 +355,7 @@
             let text = '';
             if (el.tagName === 'SELECT') {
                 const selIndex = el.selectedIndex;
-                if (selIndex >= 0) {
-                    text = el.options[selIndex].text;
-                } else {
-                    text = '';
-                }
+                text = selIndex >= 0 ? el.options[selIndex].text : '';
             } else {
                 text = el.value || el.textContent || '';
             }
@@ -404,14 +375,12 @@
                 document.body.appendChild(tempInput);
                 tempInput.focus();
                 tempInput.select();
-
                 try {
                     const successful = document.execCommand('copy');
                     if (successful) showMessage();
                 } catch (err) {
                     console.error('Fallback copy failed:', err);
                 }
-
                 document.body.removeChild(tempInput);
             }
         }
@@ -421,17 +390,18 @@
             msg.style.display = 'block';
             setTimeout(() => msg.style.display = 'none', 2000);
         }
-        
+
+        /* ---------- file load / populate ---------- */
         function loadFormData(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
+
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
-                    const formData = JSON.parse(e.target.result);
-                    populateForm(formData);
-                    
+                    const parsed = JSON.parse(e.target.result);
+                    populateForm(parsed);
+
                     const loadSuccess = document.getElementById('loadSuccess');
                     loadSuccess.style.display = 'block';
                     setTimeout(() => loadSuccess.style.display = 'none', 3000);
@@ -442,85 +412,181 @@
             reader.readAsText(file);
             event.target.value = '';
         }
-        
-        function populateForm(data) {
-            const textInputs = [
-                'surname', 'otherNames', 'passportNo', 'nationality', 'email', 
-                'primaryPhone', 'secondaryPhone', 'nationalId', 'placeOfBirth', 
-                'countryOfBirth', 'deliveryAddress', 'delegateName', 
-                'delegatePassport', 'delegateNationalId', 'cardNumber', 'cardName', 'cvc'
-            ];
-            
-            textInputs.forEach(id => {
-                if (data[id] !== undefined) {
-                    document.getElementById(id).value = data[id];
-                }
-            });
-            
-            const selectFields = ['gender', 'maritalStatus'];
-            selectFields.forEach(id => {
-                if (data[id] !== undefined) {
-                    const select = document.getElementById(id);
-                    for (let i = 0; i < select.options.length; i++) {
-                        if (select.options[i].text === data[id]) {
-                            select.selectedIndex = i;
-                            break;
-                        }
+
+        // Helper to attempt multiple candidate paths (supports nested like "dateOfBirth.day")
+        function getValFromPaths(obj, candidates) {
+            for (const key of candidates) {
+                if (!key) continue;
+                const parts = key.split('.');
+                let cur = obj;
+                let ok = true;
+                for (const p of parts) {
+                    if (cur && Object.prototype.hasOwnProperty.call(cur, p)) {
+                        cur = cur[p];
+                    } else {
+                        ok = false;
+                        break;
                     }
                 }
-            });
-            
-            const dateFields = {
-                'dob': ['dobDay', 'dobMonth', 'dobYear'],
-                'exp': ['expDay', 'expMonth', 'expYear']
+                if (ok) return cur;
+            }
+            return undefined;
+        }
+
+        function setSelectValueFlexible(selectId, value) {
+            if (value === undefined || value === null || value === '') return;
+            const select = document.getElementById(selectId);
+            for (let i = 0; i < select.options.length; i++) {
+                const opt = select.options[i];
+                if (opt.value == value || opt.text == value) {
+                    select.selectedIndex = i;
+                    return;
+                }
+            }
+            // if not found, leave as-is
+        }
+
+        function populateForm(data) {
+            // text / simple inputs (attempt nested and flat variants)
+            const mapText = {
+                email: ['email', 'applicant.email'],
+                surname: ['surname', 'applicant.surname'],
+                otherNames: ['otherNames', 'applicant.otherNames'],
+                passportNo: ['passportNo', 'passport.passportNo', 'applicant.passportNo'],
+                nationality: ['nationality', 'applicant.nationality'],
+                primaryPhone: ['primaryPhone', 'applicant.primaryPhone'],
+                secondaryPhone: ['secondaryPhone', 'applicant.secondaryPhone'],
+                nationalId: ['nationalId', 'applicant.nationalId'],
+                placeOfBirth: ['placeOfBirth', 'applicant.placeOfBirth'],
+                countryOfBirth: ['countryOfBirth', 'applicant.countryOfBirth'],
+                deliveryAddress: ['deliveryAddress', 'contact.deliveryAddress'],
+                delegateName: ['delegate.name', 'delegateName'],
+                delegatePassport: ['delegate.passport', 'delegatePassport'],
+                delegateNationalId: ['delegate.nationalId', 'delegateNationalId'],
+                cardNumber: ['payment.cardNumber', 'cardNumber'],
+                cardName: ['payment.cardName', 'cardName'],
+                cvc: ['payment.cvc', 'cvc']
             };
-            
-            for (const [prefix, ids] of Object.entries(dateFields)) {
-                if (data[`${prefix}Day`] !== undefined) {
-                    setSelectValue(ids[0], data[`${prefix}Day`]);
-                }
-                if (data[`${prefix}Month`] !== undefined) {
-                    setSelectValue(ids[1], data[`${prefix}Month`]);
-                }
-                if (data[`${prefix}Year`] !== undefined) {
-                    setSelectValue(ids[2], data[`${prefix}Year`]);
+
+            for (const [fieldId, candidates] of Object.entries(mapText)) {
+                const val = getValFromPaths(data, candidates);
+                if (val !== undefined) {
+                    const el = document.getElementById(fieldId);
+                    if (el) el.value = val;
                 }
             }
-            
-            if (data.expireMonth !== undefined) {
-                setSelectValue('expireMonth', data.expireMonth);
-            }
-            if (data.expireYear !== undefined) {
-                setSelectValue('expireYear', data.expireYear);
-            }
-            
+
+            // date of birth
+            const dobDay = getValFromPaths(data, ['dateOfBirth.day', 'dobDay']);
+            const dobMonth = getValFromPaths(data, ['dateOfBirth.month', 'dobMonth']);
+            const dobYear = getValFromPaths(data, ['dateOfBirth.year', 'dobYear']);
+            setSelectValueFlexible('dobDay', dobDay);
+            setSelectValueFlexible('dobMonth', dobMonth);
+            setSelectValueFlexible('dobYear', dobYear);
+
+            // passport expiry
+            const expDay = getValFromPaths(data, ['passportExpiry.day', 'expDay']);
+            const expMonth = getValFromPaths(data, ['passportExpiry.month', 'expMonth']);
+            const expYear = getValFromPaths(data, ['passportExpiry.year', 'expYear']);
+            setSelectValueFlexible('expDay', expDay);
+            setSelectValueFlexible('expMonth', expMonth);
+            setSelectValueFlexible('expYear', expYear);
+
+            // gender & marital status (match by text or value)
+            const genderVal = getValFromPaths(data, ['gender', 'applicant.gender']);
+            if (genderVal !== undefined) setSelectValueFlexible('gender', genderVal);
+            const maritalVal = getValFromPaths(data, ['maritalStatus', 'maritalStatus']);
+            if (maritalVal !== undefined) setSelectValueFlexible('maritalStatus', maritalVal);
+
+            // payment expire month/year
+            const payExpireMonth = getValFromPaths(data, ['payment.expireMonth', 'expireMonth']);
+            const payExpireYear = getValFromPaths(data, ['payment.expireYear', 'expireYear']);
+            setSelectValueFlexible('expireMonth', payExpireMonth);
+            setSelectValueFlexible('expireYear', payExpireYear);
+
+            // documents (checkboxes)
+            const docs = getValFromPaths(data, ['documents', 'selectedDocuments', 'documentsSelected']);
             const checkboxes = {
                 'birthCert': 'Birth Certificate',
                 'marriageCert': 'Marriage Certificate',
                 'policeCert': 'Police Certificate',
                 'gramaCert': 'Grama Niladhari Certificate'
             };
-            
             for (const [id, value] of Object.entries(checkboxes)) {
-                const checkbox = document.getElementById(id);
-                if (data.documents && data.documents.includes(value)) {
-                    checkbox.checked = true;
+                const cb = document.getElementById(id);
+                if (!cb) continue;
+                if (Array.isArray(docs) && docs.includes(value)) {
+                    cb.checked = true;
                 } else {
-                    checkbox.checked = false;
+                    // also support object forms like { "Birth Certificate": true }
+                    if (docs && typeof docs === 'object' && docs[value]) {
+                        cb.checked = true;
+                    } else {
+                        // fallback flat keys in JSON: documentsBirthCertificate: true
+                        cb.checked = false;
+                    }
                 }
             }
         }
-        
-        function setSelectValue(selectId, value) {
-            const select = document.getElementById(selectId);
-            for (let i = 0; i < select.options.length; i++) {
-                if (select.options[i].value == value) {
-                    select.selectedIndex = i;
-                    return;
+
+        /* ---------- collect & download (structured & ordered) ---------- */
+        function collectFormDataStructured() {
+            // Build object in the same visual order as the page.
+            // Using an object literal preserves insertion order in modern JS engines.
+            const obj = {
+                // top-level applicant details in page order
+                email: document.getElementById('email').value || '',
+                surname: document.getElementById('surname').value || '',
+                otherNames: document.getElementById('otherNames').value || '',
+                dateOfBirth: {
+                    day: document.getElementById('dobDay').value || '',
+                    month: document.getElementById('dobMonth').value || '',
+                    year: document.getElementById('dobYear').value || ''
+                },
+                passportNo: document.getElementById('passportNo').value || '',
+                passportExpiry: {
+                    day: document.getElementById('expDay').value || '',
+                    month: document.getElementById('expMonth').value || '',
+                    year: document.getElementById('expYear').value || ''
+                },
+                gender: (function() {
+                    const sel = document.getElementById('gender');
+                    return sel && sel.selectedIndex >= 0 ? sel.options[sel.selectedIndex].text : '';
+                })(),
+                nationality: document.getElementById('nationality').value || '',
+                primaryPhone: document.getElementById('primaryPhone').value || '',
+                secondaryPhone: document.getElementById('secondaryPhone').value || '',
+                nationalId: document.getElementById('nationalId').value || '',
+                placeOfBirth: document.getElementById('placeOfBirth').value || '',
+                countryOfBirth: document.getElementById('countryOfBirth').value || '',
+                maritalStatus: (function() {
+                    const sel = document.getElementById('maritalStatus');
+                    return sel && sel.selectedIndex >= 0 ? sel.options[sel.selectedIndex].text : '';
+                })(),
+                deliveryAddress: document.getElementById('deliveryAddress').value || '',
+                delegate: {
+                    name: document.getElementById('delegateName').value || '',
+                    passport: document.getElementById('delegatePassport').value || '',
+                    nationalId: document.getElementById('delegateNationalId').value || ''
+                },
+                documents: (function() {
+                    const arr = [];
+                    const checked = document.querySelectorAll('input[name="documents"]:checked');
+                    checked.forEach(c => arr.push(c.value));
+                    return arr;
+                })(),
+                payment: {
+                    cardNumber: document.getElementById('cardNumber').value || '',
+                    cardName: document.getElementById('cardName').value || '',
+                    expireMonth: document.getElementById('expireMonth').value || '',
+                    expireYear: document.getElementById('expireYear').value || '',
+                    cvc: document.getElementById('cvc').value || ''
                 }
-            }
+            };
+
+            return obj;
         }
-        
+
         function downloadFormData() {
             const filenameInput = document.getElementById('filename');
             const filename = filenameInput.value.trim();
@@ -532,72 +598,50 @@
             if (!downloadFilename.toLowerCase().endsWith('.json')) {
                 downloadFilename += '.json';
             }
-            const formData = collectFormData();
-            const jsonData = JSON.stringify(formData, null, 2);
-            
+
+            const structured = collectFormDataStructured();
+
+            // stringify with 2-space indentation for neat formatting
+            const jsonData = JSON.stringify(structured, null, 2);
+
             const blob = new Blob([jsonData], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            
+
             const a = document.createElement('a');
             a.href = url;
             a.download = downloadFilename;
             document.body.appendChild(a);
             a.click();
-            
+
             setTimeout(() => {
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
             }, 100);
         }
-        
-        function collectFormData() {
-            const formData = {};
-            
-            const textInputs = [
-                'surname', 'otherNames', 'passportNo', 'nationality', 'email', 
-                'primaryPhone', 'secondaryPhone', 'nationalId', 'placeOfBirth', 
-                'countryOfBirth', 'deliveryAddress', 'delegateName', 
-                'delegatePassport', 'delegateNationalId', 'cardNumber', 'cardName', 'cvc'
-            ];
-            
-            textInputs.forEach(id => {
-                formData[id] = document.getElementById(id).value;
-            });
-            
-            const selectFields = ['gender', 'maritalStatus'];
-            selectFields.forEach(id => {
-                const select = document.getElementById(id);
-                formData[id] = select.options[select.selectedIndex].text;
-            });
-            
-            const dateFields = {
-                'dob': ['dobDay', 'dobMonth', 'dobYear'],
-                'exp': ['expDay', 'expMonth', 'expYear']
-            };
-            
-            for (const [prefix, ids] of Object.entries(dateFields)) {
-                formData[`${prefix}Day`] = document.getElementById(ids[0]).value;
-                formData[`${prefix}Month`] = document.getElementById(ids[1]).value;
-                formData[`${prefix}Year`] = document.getElementById(ids[2]).value;
-            }
-            
-            formData['expireMonth'] = document.getElementById('expireMonth').value;
-            formData['expireYear'] = document.getElementById('expireYear').value;
-            
-            formData['documents'] = [];
-            const checkboxes = document.querySelectorAll('input[name="documents"]:checked');
-            checkboxes.forEach(checkbox => {
-                formData['documents'].push(checkbox.value);
-            });
-            
-            return formData;
-        }
 
-        const filenameInput = document.getElementById('filename');
-        filenameInput.addEventListener('input', function() {
-            const value = filenameInput.value.trim();
+        /* ---------- init on DOM ready ---------- */
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+
+            populateDateSelectors('dobDay', 'dobMonth', 'dobYear', 1900, currentYear);
+            populateDateSelectors('expDay', 'expMonth', 'expYear', currentYear, currentYear + 10);
+            populateExpirationDate('expireMonth', 'expireYear', currentYear, currentYear + 10);
+
+            document.getElementById('loadButton').addEventListener('click', () => {
+                document.getElementById('fileInput').click();
+            });
+
+            document.getElementById('fileInput').addEventListener('change', loadFormData);
+
             const downloadButton = document.getElementById('downloadButton');
-            downloadButton.disabled = value === '';
+            downloadButton.addEventListener('click', downloadFormData);
+
+            const filenameInput = document.getElementById('filename');
+            filenameInput.addEventListener('input', function() {
+                const value = filenameInput.value.trim();
+                downloadButton.disabled = value === '';
+            });
         });
     </script>
 </body>
